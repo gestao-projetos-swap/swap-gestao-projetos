@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Operação — Acompanhamento de Projeto · Swap</title>
+<style>
+  :root{
+    --black:#0a0a0a;--ink:#1a1a1a;--charcoal:#2b2b2b;
+    --accent:#e53516;--accent-dark:#c22f13;--accent-soft:#fdeee9;
+    --cream:#f7f3ee;--sand:#efe7dd;--smoke:#f4f2ef;--grey:#8f8f8f;--white:#fff;
+    --radius:18px;--shadow:0 8px 30px rgba(0,0,0,.10);--shadow-sm:0 2px 10px rgba(0,0,0,.07);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--smoke);line-height:1.6}
+  a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+
+  header{background:linear-gradient(135deg,var(--black) 0%,var(--charcoal) 100%);color:#fff;padding:30px 6vw 24px;position:relative;overflow:hidden}
+  header::after{content:"";position:absolute;right:-80px;top:-80px;width:320px;height:320px;background:radial-gradient(circle,var(--accent) 0%,transparent 68%);opacity:.25}
+  .brandbar{display:flex;align-items:center;gap:18px;position:relative;z-index:2;flex-wrap:wrap}
+  .logo-slot{display:flex;align-items:center;justify-content:center;background:#fff;color:var(--black);font-weight:800;letter-spacing:.5px;border-radius:12px;padding:10px 18px;font-size:22px;min-width:120px;min-height:46px;border:2px dashed var(--cream)}
+  .logo-slot img{max-height:40px;display:block}
+  .header-txt h1{font-size:24px;font-weight:700;line-height:1.2}
+  .header-txt p{font-size:13.5px;color:var(--cream);margin-top:4px;max-width:640px}
+  .back-link{position:relative;z-index:2;display:inline-block;margin-top:16px;font-size:13px;color:var(--accent-soft)}
+
+  .tabs{display:flex;gap:6px;padding:0 6vw;background:var(--black);position:sticky;top:0;z-index:10;flex-wrap:wrap}
+  .tab-btn{background:transparent;border:none;color:#c2bcb4;cursor:pointer;padding:15px 22px;font-size:15px;font-weight:600;border-bottom:3px solid transparent;transition:.2s;font-family:inherit}
+  .tab-btn:hover{color:#fff}.tab-btn.active{color:#fff;border-bottom-color:var(--accent)}
+
+  main{max-width:1080px;margin:0 auto;padding:28px 6vw 80px}
+  .tab-panel{display:none;animation:fade .35s ease}.tab-panel.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  section.block{background:#fff;border-radius:var(--radius);padding:24px 26px;margin-bottom:22px;box-shadow:var(--shadow-sm)}
+  section.block h3{color:var(--black);font-size:18px;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+  section.block h3 .num{background:var(--black);color:#fff;width:30px;height:30px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;font-size:14px;flex:none}
+  section.block h4{color:var(--charcoal);font-size:15px;margin:16px 0 6px}
+  p{margin-bottom:10px}ul,ol{margin:6px 0 12px 22px}li{margin-bottom:6px}strong{color:var(--black)}
+
+  .btn{display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-family:inherit;font-weight:600;font-size:14px;border-radius:10px;padding:10px 18px;border:1px solid transparent;transition:.15s;text-decoration:none}
+  .btn-accent{background:var(--accent);color:#fff}.btn-accent:hover{background:var(--accent-dark);text-decoration:none}
+  .btn-ghost{background:#fff;border-color:#d9d2c8;color:var(--charcoal)}.btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+  .btn-sm{padding:7px 13px;font-size:12.5px;border-radius:8px}
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0}
+
+  input[type=text],input[type=number],input[type=date],select,textarea{font-family:inherit;font-size:13.5px;color:var(--ink);background:#fff;border:1px solid #d9d2c8;border-radius:8px;padding:7px 9px;width:100%;transition:.15s}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  textarea{resize:vertical;min-height:70px;line-height:1.5}
+  label.fld{display:block;font-size:11.5px;font-weight:700;color:var(--charcoal);text-transform:uppercase;letter-spacing:.4px;margin:12px 0 5px}
+  .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-bottom:6px}
+  .form-grid label.fld{margin-top:0}
+
+  .table-wrap{overflow-x:auto;border-radius:12px;border:1px solid #ece7e0;margin-top:8px}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:640px}
+  th{background:var(--black);color:#fff;text-align:left;padding:10px 12px;font-weight:600;font-size:12.5px}
+  td{padding:10px 12px;border-top:1px solid #efe9e2;vertical-align:top}
+  table.edit{min-width:780px}table.edit td{padding:6px}
+  table.edit input,table.edit select{border:1px solid #e7e0d6;border-radius:6px}
+  table.edit td.calc{font-weight:800;color:var(--accent-dark);text-align:center;font-size:15px;background:#fff}
+  table.edit td.rank{font-weight:800;color:#fff;text-align:center;width:34px;font-size:14px}
+  .del-row{background:none;border:none;color:var(--accent);cursor:pointer;font-size:19px;font-weight:700;line-height:1;padding:0 4px}
+  .del-row:hover{color:var(--accent-dark)}
+
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px;margin:6px 0 8px}
+  .kpi{background:#fff;border:1px solid #ece7e0;border-radius:14px;padding:15px 16px;box-shadow:var(--shadow-sm)}
+  .kpi .val{font-size:29px;font-weight:800;color:var(--black);line-height:1}
+  .kpi .lab{font-size:11px;color:var(--grey);text-transform:uppercase;letter-spacing:.5px;margin-top:6px;font-weight:700}
+  .kpi.accent .val{color:var(--accent)}.kpi.warn .val{color:#c98a00}.kpi.bad .val{color:#c0392b}.kpi.good .val{color:#1c8a4d}
+  .progress{height:6px;background:#ece7e0;border-radius:20px;overflow:hidden;margin:6px 0 2px}
+  .progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent-dark));border-radius:20px;transition:width .5s}
+  .dash-row{display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center;margin-top:8px}
+  @media(max-width:680px){.dash-row{grid-template-columns:1fr}}
+  .legend{list-style:none;margin:0}.legend li{display:flex;align-items:center;gap:9px;margin-bottom:10px;font-size:14px}
+  .dot{width:13px;height:13px;border-radius:4px;flex:none}
+  .note{background:var(--accent-soft);border-radius:10px;padding:12px 16px;font-size:13.5px;color:var(--charcoal);margin:12px 0}
+  .rag-badge{display:inline-block;padding:4px 14px;border-radius:20px;font-weight:700;font-size:13px;color:#fff}
+
+  /* onboarding / storage */
+  .overlay{position:fixed;inset:0;background:rgba(10,10,10,.75);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px}
+  .overlay[hidden]{display:none}
+  .modal{background:#fff;border-radius:20px;max-width:580px;width:100%;padding:30px 30px 26px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+  .modal h2{color:var(--black);font-size:22px;margin-bottom:8px}.modal p{font-size:14px;color:var(--charcoal)}
+  .choice{display:grid;gap:12px;margin-top:18px}
+  .choice button{text-align:left;border:1px solid #e2dbd1;border-radius:14px;padding:16px 18px;background:#fff;cursor:pointer;transition:.15s;font-family:inherit}
+  .choice button:hover{border-color:var(--accent);box-shadow:var(--shadow-sm)}
+  .choice .t{font-weight:800;color:var(--black);font-size:15px;display:block;margin-bottom:3px}
+  .choice .d{font-size:13px;color:var(--charcoal)}
+  .choice button[disabled]{opacity:.45;cursor:not-allowed}
+
+  .storagebar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;background:#fff;border:1px solid #ece7e0;border-left:4px solid var(--accent);border-radius:12px;padding:11px 16px;margin:0 0 22px;box-shadow:var(--shadow-sm)}
+  .storagebar .st{font-size:13px;color:var(--charcoal);font-weight:600;display:flex;align-items:center;gap:8px}
+  .sdot{width:10px;height:10px;border-radius:50%;background:#1c8a4d;flex:none}.sdot.off{background:#c0392b}
+  .sactions{display:flex;gap:8px;flex-wrap:wrap}
+
+  .dashgrid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:760px){.dashgrid{grid-template-columns:1fr}}
+  .panelbox{background:#fff;border:1px solid #ece7e0;border-radius:16px;padding:20px 22px;box-shadow:var(--shadow-sm);margin-bottom:18px}
+  .panelbox h4{margin-top:0;color:var(--black);font-size:14px;text-transform:uppercase;letter-spacing:.4px}
+  .prewrap{white-space:pre-wrap;font-size:14px;color:var(--ink)}
+  .prio-list{list-style:none;margin:0}
+  .prio-list li{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid #f0ebe4;font-size:14px}
+  .prio-list li:last-child{border-bottom:none}.prio-list .sc{font-weight:800;color:var(--accent-dark)}
+  .dash-hero{background:linear-gradient(135deg,var(--black),var(--charcoal));color:#fff;border-radius:18px;padding:22px 24px;margin-bottom:18px}
+  .dash-hero h3{font-size:20px;margin-bottom:6px}
+  .dash-hero .meta{font-size:13px;color:#d8d2c8;margin-bottom:14px}
+  .dash-hero .hero-prog{display:flex;align-items:center;gap:20px;margin-top:16px}
+  .dash-hero .hero-pct{font-size:34px;font-weight:800;line-height:1;white-space:nowrap;color:#fff}
+  .dash-hero .hero-pct span{font-size:11px;font-weight:600;color:#b8b2a8;margin-left:9px;letter-spacing:1px;text-transform:uppercase}
+  .dash-hero .hero-track{flex:1;height:5px;background:rgba(255,255,255,.16);border-radius:20px;overflow:hidden}
+  .dash-hero .hero-track>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),#ff7a4d);border-radius:20px;transition:width .5s}
+  .muted{color:var(--grey);font-style:italic}
+  .datacard{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px 24px;position:relative;padding-top:6px}
+  .datacard .fitem .k{font-size:11px;color:var(--grey);text-transform:uppercase;letter-spacing:.4px;font-weight:700}
+  .datacard .fitem .v{font-size:15px;color:var(--black);font-weight:600}
+  .edit-pencil{position:absolute;top:-4px;right:0;background:none;border:1px solid #e2dbd1;border-radius:8px;padding:5px 11px;cursor:pointer;font-size:13px;color:var(--charcoal);font-family:inherit}
+  .edit-pencil:hover{border-color:var(--accent);color:var(--accent)}
+  #statusTable .prewrap{white-space:pre-wrap;font-size:13px}
+  #statusTable td{vertical-align:top}
+  .help-btn{margin-left:8px;width:24px;height:24px;border-radius:50%;border:1px solid var(--accent);background:#fff;color:var(--accent);font-weight:800;cursor:pointer;font-size:13px;line-height:1;font-family:inherit;vertical-align:middle}
+  .help-btn:hover{background:var(--accent);color:#fff}
+  .help-panel{background:var(--accent-soft);border:1px solid #f4d6cd;border-radius:12px;padding:14px 18px;margin:6px 0 12px}
+  .help-panel[hidden]{display:none}
+  .help-panel h5{color:var(--black);font-size:14px;margin:12px 0 2px}
+  .help-panel h5:first-child{margin-top:0}
+  .help-panel p{font-size:13px;color:var(--charcoal);margin-bottom:2px}
+  .help-panel .how{color:var(--accent-dark);font-weight:600}
+  .help-panel .formula{margin-top:12px;padding-top:10px;border-top:1px solid #f0cfc6;font-size:13.5px;color:var(--black);font-weight:600}
+
+  @media (max-width:560px){.header-txt h1{font-size:20px}.tab-btn{padding:13px 14px;font-size:13.5px}}
+  @media print{
+    .tabs,.storagebar,.toolbar,.no-print,.back-link{display:none!important}
+    .tab-panel{display:none!important}.tab-panel.active{display:block!important}
+    body{background:#fff}
+    header{background:var(--black)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .kpi,.panelbox,section.block{box-shadow:none}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brandbar">
+    <!-- LOGO DA SWAP: substitua a caixa "logo-slot" por <div class="logo-slot"><img src="logo-swap.png" alt="Swap"></div> -->
+    <div class="logo-slot">swap</div>
+    <div class="header-txt">
+      <h1>Operação — Acompanhamento de Projeto</h1>
+      <p>Preencha a matriz e a priorização; o dashboard para a liderança é gerado automaticamente.</p>
+    </div>
+  </div>
+  <a class="back-link" href="Material-de-Consulta.html">← Voltar ao material de consulta (Gestão de Projetos &amp; PMO)</a>
+</header>
+
+<nav class="tabs">
+  <button class="tab-btn active" data-tab="dash">📊 Dashboard</button>
+  <button class="tab-btn" data-tab="matriz">Matriz</button>
+  <button class="tab-btn" data-tab="rice">Priorização (RICE)</button>
+  <button class="tab-btn" data-tab="report">Status e Dados</button>
+</nav>
+
+<main>
+
+  <!-- ===================== DASHBOARD ===================== -->
+  <div class="tab-panel active" id="dash">
+    <!-- 1. Progresso (visão imediata) -->
+    <div class="dash-hero" id="dashHero"></div>
+    <!-- 2. Itens (números-chave) -->
+    <div class="kpis" id="dashKpis"></div>
+    <!-- 3. Pontos de atenção e próximos passos (o que exige decisão) -->
+    <div class="dashgrid">
+      <div class="panelbox"><h4>⚠️ Pontos de atenção</h4><div class="prewrap" id="dashAtencao"></div></div>
+      <div class="panelbox"><h4>➡️ Próximos passos</h4><div class="prewrap" id="dashProximos"></div></div>
+    </div>
+    <!-- 4. Prioridades e marcos -->
+    <div class="panelbox"><h4>🎯 Prioridades (RICE)</h4><ul class="prio-list" id="dashPrio"></ul></div>
+    <div class="panelbox"><h4>📅 Marcos</h4><div id="dashMarcos"></div></div>
+    <!-- 5. Andamento por status (detalhe, por último) -->
+    <section class="block">
+      <h3><span class="num">5</span>Andamento por status</h3>
+      <div class="dash-row">
+        <svg id="dashDonut" viewBox="0 0 120 120" width="180" height="180" role="img" aria-label="Status"></svg>
+        <ul class="legend" id="dashLegend"></ul>
+      </div>
+    </section>
+    <p class="muted no-print" id="dashUpdated" style="text-align:right;font-size:12px"></p>
+  </div>
+
+  <!-- ===================== MATRIZ ===================== -->
+  <div class="tab-panel" id="matriz">
+    <section class="block">
+      <h3><span class="num">1</span>Matriz de acompanhamento</h3>
+      <p>Cada linha é um requisito/frente do projeto. O dashboard consolida tudo automaticamente.</p>
+      <div class="toolbar">
+        <button class="btn btn-accent btn-sm" onclick="mtxAdd()">+ Adicionar linha</button>
+        <button class="btn btn-ghost btn-sm" onclick="mtxReset()">Restaurar exemplo</button>
+      </div>
+      <div class="table-wrap"><table class="edit" id="mtxTable">
+        <thead><tr><th>Requisito (artigo)</th><th>Ação</th><th>Responsável</th><th>Prazo</th><th>Status</th><th>Evidência</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table></div>
+      <div class="note">Itens com <strong>prazo vencido</strong> e não concluídos entram no indicador "Prazo vencido" do dashboard.</div>
+    </section>
+  </div>
+
+  <!-- ===================== RICE ===================== -->
+  <div class="tab-panel" id="rice">
+    <section class="block">
+      <h3><span class="num">1</span>Priorização RICE <button class="help-btn" onclick="toggleRiceHelp()" title="Como preencher cada item">?</button></h3>
+      <p><strong>RICE = (Reach × Impact × Confidence) ÷ Effort.</strong> Clique no <strong>?</strong> ao lado do título para ver o que é cada item e como mensurar.</p>
+      <div id="riceHelp" class="help-panel" hidden>
+        <h5>Reach — Alcance</h5>
+        <p>Quantas pessoas, clientes ou transações são impactadas pela iniciativa num período definido.</p>
+        <p class="how">Como mensurar: fixe um período (ex.: por trimestre) e estime o número real — nº de clientes afetados, transações/mês, usuários do fluxo. Use dado real sempre que tiver.</p>
+        <h5>Impact — Impacto</h5>
+        <p>O quanto a iniciativa move o ponteiro (na meta que importa) para cada um que ela alcança.</p>
+        <p class="how">Como mensurar: use a escala — Massivo (3), Alto (2), Médio (1), Baixo (0,5), Mínimo (0,25). Pergunte: “se der certo, o quanto muda o resultado?”. Salto grande = 3; efeito pequeno = 0,25.</p>
+        <h5>Confidence — Confiança</h5>
+        <p>O quanto você confia nas suas estimativas de alcance e impacto (e na viabilidade). Serve para penalizar o otimismo.</p>
+        <p class="how">Como mensurar: Alta (100%) = tenho dados/evidência; Média (80%) = alguns indícios; Baixa (50%) = palpite fundamentado. Sem dado nenhum? Não passe de 50%.</p>
+        <h5>Effort — Esforço</h5>
+        <p>O trabalho total estimado, somando todas as áreas, em <strong>pessoa-mês</strong> (1 pessoa dedicada por 1 mês = 1).</p>
+        <p class="how">Como mensurar: pessoas × meses. Ex.: 2 pessoas por 15 dias ≈ 1 pessoa-mês; 3 pessoas por 2 meses = 6. Quanto maior, menor a nota final.</p>
+        <div class="formula">RICE = (Reach × Impact × Confidence) ÷ Effort · Dica: use as mesmas premissas em todas as iniciativas para a comparação ser justa.</div>
+      </div>
+      <div class="toolbar">
+        <button class="btn btn-accent btn-sm" onclick="riceAdd()">+ Adicionar iniciativa</button>
+        <button class="btn btn-ghost btn-sm" onclick="riceReset()">Restaurar exemplo</button>
+      </div>
+      <div class="table-wrap"><table class="edit" id="riceTable">
+        <thead><tr><th>#</th><th>Iniciativa</th><th>Reach</th><th>Impact</th><th>Confidence</th><th>Effort</th><th>RICE</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table></div>
+      <div class="note"><strong>Sequência recomendada:</strong> <span id="riceSeq">—</span></div>
+    </section>
+  </div>
+
+  <!-- ===================== STATUS E DADOS ===================== -->
+  <div class="tab-panel" id="report">
+    <section class="block">
+      <h3><span class="num">1</span>Dados gerais</h3>
+      <div id="dadosView" hidden></div>
+      <div id="dadosForm">
+        <div class="form-grid">
+          <div><label class="fld">Nome do projeto</label><input type="text" id="p_nome" placeholder="Adequação regulatória BACEN"></div>
+          <div><label class="fld">Resolução</label><input type="text" id="p_res" placeholder="Resolução BCB nº ___/____"></div>
+          <div><label class="fld">Prazo do BACEN</label><input type="date" id="p_prazo"></div>
+          <div><label class="fld">Responsável (PM)</label><input type="text" id="p_resp"></div>
+          <div><label class="fld">Sponsor</label><input type="text" id="p_sponsor"></div>
+        </div>
+        <div class="toolbar"><button class="btn btn-accent btn-sm" onclick="dadosSave()">Salvar dados gerais</button></div>
+      </div>
+    </section>
+    <section class="block">
+      <h3><span class="num">2</span>Status para a liderança</h3>
+      <p class="muted" style="font-size:13px;margin-bottom:6px">Registre o status a cada semana. Cada atualização vira uma linha no histórico, com a data e o progresso daquele momento.</p>
+      <div class="toolbar"><button class="btn btn-accent btn-sm" onclick="openStatusForm(-1)">＋ Atualizar status</button></div>
+      <div id="statusForm" class="panelbox" hidden style="border-left:4px solid var(--accent)">
+        <div class="form-grid">
+          <div><label class="fld">Data</label><input type="date" id="s_data"></div>
+          <div><label class="fld">Status geral</label><select id="s_rag"><option value="Verde">🟢 Verde — no rumo</option><option value="Amarelo">🟡 Amarelo — atenção</option><option value="Vermelho">🔴 Vermelho — em risco</option></select></div>
+        </div>
+        <label class="fld">Resumo executivo</label>
+        <textarea id="s_resumo" placeholder="Em 2–3 linhas: onde o projeto está e a mensagem principal."></textarea>
+        <label class="fld">⚠️ Pontos de atenção (o que pode travar / precisa de decisão)</label>
+        <textarea id="s_atencao" placeholder="• Dependência de fornecedor X pode atrasar a frente Y&#10;• Requisito Z com interpretação em aberto"></textarea>
+        <label class="fld">➡️ Próximos passos</label>
+        <textarea id="s_proximos" placeholder="• Homologar frente A até dd/mm&#10;• Validar com jurídico o requisito B"></textarea>
+        <div class="toolbar"><button class="btn btn-accent btn-sm" onclick="statusSave()">Salvar status</button><button class="btn btn-ghost btn-sm" onclick="closeStatusForm()">Cancelar</button></div>
+      </div>
+      <div class="table-wrap"><table id="statusTable" style="min-width:900px">
+        <thead><tr><th>Data</th><th>Progresso</th><th>Status</th><th>Resumo</th><th>Pontos de atenção</th><th>Próximos passos</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table></div>
+    </section>
+    <section class="block">
+      <h3><span class="num">3</span>Marcos</h3>
+      <div class="toolbar"><button class="btn btn-accent btn-sm" onclick="marcoAdd()">+ Adicionar marco</button></div>
+      <div class="table-wrap"><table class="edit" id="marcosTable" style="min-width:520px">
+        <thead><tr><th>Marco</th><th>Data</th><th>Status</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table></div>
+    </section>
+    <div class="toolbar no-print"><button class="btn btn-ghost btn-sm" onclick="window.print()">🖨️ Imprimir / PDF (para enviar)</button></div>
+  </div>
+
+  <!-- barra de armazenamento (rodapé, presente em todas as abas) -->
+  <div class="storagebar no-print" style="margin:28px 0 0">
+    <span class="st"><span class="sdot off" id="sdot"></span><span id="storageMsg">Nenhum armazenamento conectado</span></span>
+    <span class="sactions">
+      <button class="btn btn-ghost btn-sm" onclick="openOnboarding()">Trocar armazenamento</button>
+      <button class="btn btn-ghost btn-sm" onclick="exportData()">⬇ Baixar backup</button>
+      <label class="btn btn-ghost btn-sm" style="cursor:pointer;margin:0">⬆ Abrir backup<input type="file" accept="application/json,.json" onchange="importData(this)" hidden></label>
+    </span>
+  </div>
+
+</main>
+
+<!-- ONBOARDING -->
+<div class="overlay" id="onboarding" hidden>
+  <div class="modal">
+    <h2>Onde salvar os dados?</h2>
+    <p>Escolha uma vez. Você pode mudar depois em "Trocar armazenamento". Seus dados nunca saem do seu computador/nuvem — este app não envia nada para servidores.</p>
+    <div class="choice">
+      <button id="optFolder" onclick="connectFolder()">
+        <span class="t">📁 Conectar uma pasta (recomendado)</span>
+        <span class="d">Escolha uma pasta no seu computador. Se ela estiver dentro do <strong>Google Drive</strong> ou <strong>OneDrive</strong>, o próprio app de sincronização envia para a nuvem e a equipe recebe as atualizações. Funciona no Chrome e no Edge.</span>
+      </button>
+      <button onclick="useLocal()">
+        <span class="t">💻 Usar só neste navegador</span>
+        <span class="d">Salva localmente neste navegador. Simples, mas use "Baixar backup" para não perder e para compartilhar.</span>
+      </button>
+    </div>
+    <p id="fsWarn" class="note" style="display:none">Seu navegador não permite conectar pasta diretamente (use Chrome ou Edge para essa opção). Você ainda pode usar "só neste navegador" + backup.</p>
+  </div>
+</div>
+
+<!-- RECONECTAR -->
+<div class="overlay" id="reconnect" hidden>
+  <div class="modal">
+    <h2>Reconectar a pasta</h2>
+    <p>Por segurança, o navegador pede sua permissão de novo para acessar a pasta com os dados. Clique abaixo para continuar de onde parou.</p>
+    <div class="choice">
+      <button onclick="doReconnect()"><span class="t">🔓 Reconectar pasta</span><span class="d">Abre a pasta salva e carrega os dados atuais.</span></button>
+      <button onclick="openOnboarding()"><span class="t">Escolher outro armazenamento</span><span class="d">Conectar outra pasta ou usar só este navegador.</span></button>
+    </div>
+  </div>
+</div>
+
+<footer style="background:var(--black);color:#c2bcb4;text-align:center;padding:20px 6vw;font-size:12.5px">
+  App de operação · <strong style="color:#fff">Swap</strong> · dados salvos localmente / na sua nuvem. Faça backup periódico.
+</footer>
+
+<script>
+  /* ================= utilidades ================= */
+  const esc=s=>(s==null?'':(''+s)).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+  const clone=o=>JSON.parse(JSON.stringify(o));
+  const lsGet=k=>{try{return localStorage.getItem(k);}catch(e){return null;}};
+  const lsSet=(k,v)=>{try{localStorage.setItem(k,v);return true;}catch(e){return false;}};
+  const FS_OK=('showDirectoryPicker' in window);
+  const FILE_NAME='swap-dados.json';
+
+  /* ================= modelo de dados ================= */
+  const DEFAULT_DATA={
+    projeto:{nome:'',res:'',prazo:'',resp:'',sponsor:''},
+    projetoSaved:false,
+    statusHistory:[{data:'2026-08-04',rag:'Verde',resumo:'Projeto em andamento, dentro do previsto.',atencao:'• Dependência de fornecedor X pode atrasar a frente Y\n• Requisito Z com interpretação em aberto',proximos:'• Homologar frente A até dd/mm\n• Validar com jurídico o requisito B',progresso:33}],
+    matriz:[
+      {req:'Art. X — requisito',acao:'Descrever a ação',resp:'Área / responsável',prazo:'',status:'Em andamento',evid:''},
+      {req:'Art. Y — requisito',acao:'Descrever a ação',resp:'Área / responsável',prazo:'',status:'Concluído',evid:''},
+      {req:'Art. Z — requisito',acao:'Descrever a ação',resp:'Área / responsável',prazo:'',status:'Não iniciado',evid:''}
+    ],
+    rice:[
+      {name:'Automação do onboarding de clientes',reach:120,impact:2,conf:80,effort:3},
+      {name:'Painel antifraude em tempo real',reach:80,impact:3,conf:80,effort:5},
+      {name:'Melhorias no app de cartões',reach:200,impact:1,conf:100,effort:2}
+    ],
+    marcos:[{m:'Kickoff',d:'',s:'Concluído'},{m:'Entrega parcial',d:'',s:'No prazo'}],
+    _updatedAt:null
+  };
+  let DATA=clone(DEFAULT_DATA);
+
+  /* ================= IndexedDB (guarda o handle da pasta) ================= */
+  const IDB={
+    _db(){return new Promise((res,rej)=>{try{
+      if(typeof indexedDB==='undefined'||!indexedDB){rej(new Error('sem indexedDB'));return;}
+      const r=indexedDB.open('swap_op',1);
+      r.onupgradeneeded=()=>r.result.createObjectStore('kv');
+      r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);
+    }catch(e){rej(e);}});},
+    async get(k){try{const db=await this._db();return await new Promise((res,rej)=>{const rq=db.transaction('kv').objectStore('kv').get(k);rq.onsuccess=()=>res(rq.result);rq.onerror=()=>rej(rq.error);});}catch(e){return undefined;}},
+    async set(k,v){try{const db=await this._db();return await new Promise((res,rej)=>{const tx=db.transaction('kv','readwrite');tx.objectStore('kv').put(v,k);tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error);});}catch(e){return;}}
+  };
+
+  /* ================= camada de armazenamento ================= */
+  let mode=null, fileHandle=null, saveTimer=null;
+
+  function setStorageBar(txt,on){
+    document.getElementById('storageMsg').textContent=txt;
+    document.getElementById('sdot').className='sdot'+(on?'':' off');
+  }
+  function openOnboarding(){document.getElementById('reconnect').hidden=true;document.getElementById('onboarding').hidden=false;
+    if(!FS_OK){document.getElementById('optFolder').disabled=true;document.getElementById('fsWarn').style.display='block';}}
+  function hideOverlays(){document.getElementById('onboarding').hidden=true;document.getElementById('reconnect').hidden=true;}
+
+  async function connectFolder(){
+    if(!FS_OK){alert('Use o Chrome ou o Edge para conectar uma pasta.');return;}
+    try{
+      const dir=await window.showDirectoryPicker({mode:'readwrite'});
+      fileHandle=await dir.getFileHandle(FILE_NAME,{create:true});
+      mode='fs';
+      await IDB.set('mode','fs');await IDB.set('fileHandle',fileHandle);await IDB.set('dirName',dir.name);
+      const f=await fileHandle.getFile();
+      if(f.size>0){try{DATA=normalize(JSON.parse(await f.text()));}catch(e){}}
+      else{await saveNow();}
+      hideOverlays();renderAll();setStorageBar('Pasta conectada: '+dir.name+' / '+FILE_NAME,true);
+    }catch(e){/* cancelado */}
+  }
+  async function useLocal(){
+    mode='local';await IDB.set('mode','local');
+    const t=lsGet('swap_op_data');
+    if(t){try{DATA=normalize(JSON.parse(t));}catch(e){}}
+    hideOverlays();renderAll();setStorageBar('Salvando só neste navegador',true);
+  }
+  async function doReconnect(){
+    try{
+      const h=await IDB.get('fileHandle');
+      if(!h){openOnboarding();return;}
+      const perm=await h.requestPermission({mode:'readwrite'});
+      if(perm!=='granted'){alert('Permissão negada.');return;}
+      fileHandle=h;mode='fs';
+      const f=await fileHandle.getFile();
+      if(f.size>0){try{DATA=normalize(JSON.parse(await f.text()));}catch(e){}}
+      hideOverlays();renderAll();setStorageBar('Pasta conectada: '+((await IDB.get('dirName'))||'pasta')+' / '+FILE_NAME,true);
+    }catch(e){openOnboarding();}
+  }
+  function scheduleSave(){renderDashboard();if(saveTimer)clearTimeout(saveTimer);saveTimer=setTimeout(saveNow,600);}
+  async function saveNow(){
+    DATA._updatedAt=new Date().toISOString();
+    try{
+      if(mode==='fs'&&fileHandle){const w=await fileHandle.createWritable();await w.write(JSON.stringify(DATA,null,2));await w.close();}
+      else{lsSet('swap_op_data',JSON.stringify(DATA));}
+    }catch(e){setStorageBar('Erro ao salvar — verifique a pasta',false);}
+    updatedStamp();
+  }
+  function normalize(d){
+    const base=clone(DEFAULT_DATA);
+    const out=Object.assign(base,d,{projeto:Object.assign(base.projeto,d.projeto||{})});
+    if(!Array.isArray(out.statusHistory))out.statusHistory=[];
+    // migração de backups antigos (report único -> histórico)
+    if(d&&d.report&&(!d.statusHistory||!d.statusHistory.length)){const r=d.report;
+      if(r.resumo||r.atencao||r.proximos)out.statusHistory=[{data:todayISO(),rag:r.rag||'Verde',resumo:r.resumo||'',atencao:r.atencao||'',proximos:r.proximos||'',progresso:0}];}
+    delete out.report;
+    return out;
+  }
+
+  /* ================= BACKUP ================= */
+  function exportData(){
+    const blob=new Blob([JSON.stringify(DATA,null,2)],{type:'application/json'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+    a.download='swap-dados-'+new Date().toISOString().slice(0,10)+'.json';
+    document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  }
+  function importData(input){
+    const f=input.files&&input.files[0];if(!f)return;const rd=new FileReader();
+    rd.onload=e=>{try{DATA=normalize(JSON.parse(e.target.result));renderAll();saveNow();alert('Backup importado ✔');}
+      catch(err){alert('Arquivo inválido. Selecione um backup .json deste app.');}};
+    rd.readAsText(f);input.value='';
+  }
+
+  /* ================= abas ================= */
+  function switchTab(id){
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active',p.id===id));
+    if(id==='dash')renderDashboard();
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  document.querySelectorAll('.tab-btn').forEach(btn=>btn.addEventListener('click',()=>switchTab(btn.dataset.tab)));
+
+  /* ================= helpers de select ================= */
+  function selHTML(fn,i,opts,val){return '<select onchange="'+fn+'('+i+',this.value)">'+opts.map(o=>'<option value="'+o[0]+'" '+(o[0]==val?'selected':'')+'>'+o[1]+'</option>').join('')+'</select>';}
+
+  /* ================= MATRIZ ================= */
+  const MST=['Não iniciado','Em andamento','Concluído','Atrasado'];
+  const MCOLOR={'Não iniciado':'#8f8f8f','Em andamento':'#e0a100','Concluído':'#1c8a4d','Atrasado':'#c0392b'};
+  function mtxRender(){
+    const tb=document.querySelector('#mtxTable tbody');tb.innerHTML='';
+    DATA.matriz.forEach((it,i)=>{const tr=document.createElement('tr');
+      tr.innerHTML=
+        '<td><input type="text" value="'+esc(it.req)+'" oninput="mtxUpd('+i+",'req',this.value)\"></td>"+
+        '<td><input type="text" value="'+esc(it.acao)+'" oninput="mtxUpd('+i+",'acao',this.value)\"></td>"+
+        '<td><input type="text" value="'+esc(it.resp)+'" oninput="mtxUpd('+i+",'resp',this.value)\"></td>"+
+        '<td><input type="date" value="'+(it.prazo||'')+'" oninput="mtxUpd('+i+",'prazo',this.value)\"></td>"+
+        '<td>'+selHTML('mtxStatus',i,MST.map(s=>[s,s]),it.status)+'</td>'+
+        '<td><input type="text" value="'+esc(it.evid)+'" oninput="mtxUpd('+i+",'evid',this.value)\"></td>"+
+        '<td><button class="del-row" title="Remover" onclick="mtxDel('+i+')">&times;</button></td>';
+      tb.appendChild(tr);});
+  }
+  function mtxUpd(i,f,v){DATA.matriz[i][f]=v;scheduleSave();}
+  function mtxStatus(i,v){DATA.matriz[i].status=v;scheduleSave();}
+  function mtxAdd(){DATA.matriz.push({req:'',acao:'',resp:'',prazo:'',status:'Não iniciado',evid:''});mtxRender();scheduleSave();}
+  function mtxDel(i){DATA.matriz.splice(i,1);mtxRender();scheduleSave();}
+  function mtxReset(){DATA.matriz=clone(DEFAULT_DATA.matriz);mtxRender();scheduleSave();}
+
+  /* ================= RICE ================= */
+  const IMPACTS=[[3,'Massivo (3)'],[2,'Alto (2)'],[1,'Médio (1)'],[0.5,'Baixo (0,5)'],[0.25,'Mínimo (0,25)']];
+  const CONFS=[[100,'Alta (100%)'],[80,'Média (80%)'],[50,'Baixa (50%)']];
+  const riceScore=it=>{const e=parseFloat(it.effort)||0;return e?(it.reach*it.impact*(it.conf/100))/e:0;};
+  const rankColor=r=>r===1?'#c22f13':r===2?'#e0733a':r===3?'#7a736a':'#a89f94';
+  function riceRender(){
+    const tb=document.querySelector('#riceTable tbody');tb.innerHTML='';
+    DATA.rice.forEach((it,i)=>{const tr=document.createElement('tr');
+      tr.innerHTML=
+        '<td class="rank"></td>'+
+        '<td><input type="text" value="'+esc(it.name)+'" oninput="riceUpd('+i+",'name',this.value)\"></td>"+
+        '<td><input type="number" min="0" value="'+it.reach+'" oninput="riceUpd('+i+",'reach',this.value)\"></td>"+
+        '<td>'+selHTML('riceImp',i,IMPACTS,it.impact)+'</td>'+
+        '<td>'+selHTML('riceConf',i,CONFS,it.conf)+'</td>'+
+        '<td><input type="number" min="0" step="0.5" value="'+it.effort+'" oninput="riceUpd('+i+",'effort',this.value)\"></td>"+
+        '<td class="calc"></td>'+
+        '<td><button class="del-row" title="Remover" onclick="riceDel('+i+')">&times;</button></td>';
+      tb.appendChild(tr);});
+    riceRecalc();
+  }
+  function riceRecalc(){
+    const order=DATA.rice.map((it,i)=>({i,s:riceScore(it)})).sort((a,b)=>b.s-a.s);
+    const rank={};order.forEach((o,idx)=>rank[o.i]=idx+1);
+    document.querySelectorAll('#riceTable tbody tr').forEach((tr,i)=>{
+      const s=riceScore(DATA.rice[i]);tr.querySelector('.calc').textContent=s?Math.round(s):'—';
+      const rc=tr.querySelector('.rank');rc.textContent=rank[i];rc.style.background=rankColor(rank[i]);});
+    const seq=order.filter(o=>o.s>0).map(o=>DATA.rice[o.i].name||'(sem nome)').join('  →  ');
+    document.getElementById('riceSeq').textContent=seq||'preencha as iniciativas';
+    scheduleSave();
+  }
+  function toggleRiceHelp(){const h=document.getElementById('riceHelp');h.hidden=!h.hidden;}
+  function riceUpd(i,f,v){DATA.rice[i][f]=(f==='name')?v:(parseFloat(v)||0);riceRecalc();}
+  function riceImp(i,v){DATA.rice[i].impact=parseFloat(v);riceRecalc();}
+  function riceConf(i,v){DATA.rice[i].conf=parseFloat(v);riceRecalc();}
+  function riceAdd(){DATA.rice.push({name:'',reach:0,impact:1,conf:80,effort:1});riceRender();}
+  function riceDel(i){DATA.rice.splice(i,1);riceRender();}
+  function riceReset(){DATA.rice=clone(DEFAULT_DATA.rice);riceRender();}
+
+  /* ================= MARCOS ================= */
+  const MARCO_ST=['No prazo','Em risco','Atrasado','Concluído'];
+  function marcosRender(){
+    const tb=document.querySelector('#marcosTable tbody');tb.innerHTML='';
+    DATA.marcos.forEach((it,i)=>{const tr=document.createElement('tr');
+      tr.innerHTML=
+        '<td><input type="text" value="'+esc(it.m)+'" oninput="marcoUpd('+i+",'m',this.value)\"></td>"+
+        '<td><input type="date" value="'+(it.d||'')+'" oninput="marcoUpd('+i+",'d',this.value)\"></td>"+
+        '<td>'+selHTML('marcoStatus',i,MARCO_ST.map(s=>[s,s]),it.s)+'</td>'+
+        '<td><button class="del-row" onclick="marcoDel('+i+')">&times;</button></td>';
+      tb.appendChild(tr);});
+  }
+  function marcoUpd(i,f,v){DATA.marcos[i][f]=v;scheduleSave();}
+  function marcoStatus(i,v){DATA.marcos[i].s=v;scheduleSave();}
+  function marcoAdd(){DATA.marcos.push({m:'',d:'',s:'No prazo'});marcosRender();scheduleSave();}
+  function marcoDel(i){DATA.marcos.splice(i,1);marcosRender();scheduleSave();}
+
+  /* ================= REPORT (form) ================= */
+  const RAG_COLOR={'Verde':'#1c8a4d','Amarelo':'#e0a100','Vermelho':'#c0392b'};
+  const PROJ_MAP={p_nome:'nome',p_res:'res',p_prazo:'prazo',p_resp:'resp',p_sponsor:'sponsor'};
+  function matrizPct(){const t=DATA.matriz.length;if(!t)return 0;const d=DATA.matriz.filter(x=>x.status==='Concluído').length;return Math.round(d/t*100);}
+  function todayISO(){return new Date().toISOString().slice(0,10);}
+
+  /* ---- Dados gerais (fixos, editáveis pelo lápis) ---- */
+  let editingDados=false;
+  function loadDadosInputs(){for(const id in PROJ_MAP)document.getElementById(id).value=DATA.projeto[PROJ_MAP[id]]||'';}
+  function renderDados(){
+    const showView=DATA.projetoSaved&&!editingDados;
+    document.getElementById('dadosForm').hidden=showView;
+    const view=document.getElementById('dadosView');view.hidden=!showView;
+    if(showView){
+      const item=(k,v)=>'<div class="fitem"><div class="k">'+k+'</div><div class="v">'+(v?esc(v):'—')+'</div></div>';
+      view.innerHTML='<div class="datacard">'+
+        item('Projeto',DATA.projeto.nome)+item('Resolução',DATA.projeto.res)+
+        item('Prazo do BACEN',DATA.projeto.prazo?fmtDate(DATA.projeto.prazo):'')+
+        item('Responsável',DATA.projeto.resp)+item('Sponsor',DATA.projeto.sponsor)+
+        '<button class="edit-pencil" onclick="dadosEdit()">✏️ Editar</button></div>';
+    }
+  }
+  function dadosSave(){for(const id in PROJ_MAP)DATA.projeto[PROJ_MAP[id]]=document.getElementById(id).value;DATA.projetoSaved=true;editingDados=false;renderDados();renderDashboard();scheduleSave();}
+  function dadosEdit(){editingDados=true;loadDadosInputs();renderDados();}
+
+  /* ---- Status (histórico por data) ---- */
+  let editingStatus=-1;
+  function openStatusForm(idx){
+    editingStatus=idx;
+    let e;
+    if(idx>=0){e=DATA.statusHistory[idx];}
+    else{const last=DATA.statusHistory[0]||{};e={data:todayISO(),rag:last.rag||'Verde',resumo:'',atencao:last.atencao||'',proximos:last.proximos||''};}
+    document.getElementById('s_data').value=e.data||todayISO();
+    document.getElementById('s_rag').value=e.rag||'Verde';
+    document.getElementById('s_resumo').value=e.resumo||'';
+    document.getElementById('s_atencao').value=e.atencao||'';
+    document.getElementById('s_proximos').value=e.proximos||'';
+    const f=document.getElementById('statusForm');f.hidden=false;f.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+  function closeStatusForm(){document.getElementById('statusForm').hidden=true;editingStatus=-1;}
+  function statusSave(){
+    const e={data:document.getElementById('s_data').value||todayISO(),rag:document.getElementById('s_rag').value,
+      resumo:document.getElementById('s_resumo').value,atencao:document.getElementById('s_atencao').value,
+      proximos:document.getElementById('s_proximos').value,progresso:matrizPct()};
+    if(editingStatus>=0)DATA.statusHistory[editingStatus]=e;else DATA.statusHistory.push(e);
+    DATA.statusHistory.sort((a,b)=>(b.data||'').localeCompare(a.data||''));
+    closeStatusForm();renderStatusTable();renderDashboard();scheduleSave();
+  }
+  function statusDel(i){if(confirm('Excluir este registro de status?')){DATA.statusHistory.splice(i,1);renderStatusTable();renderDashboard();scheduleSave();}}
+  function renderStatusTable(){
+    const tb=document.querySelector('#statusTable tbody');tb.innerHTML='';
+    if(!DATA.statusHistory.length){tb.innerHTML='<tr><td colspan="7" class="muted">Nenhum status registrado. Clique em “Atualizar status”.</td></tr>';return;}
+    DATA.statusHistory.forEach((e,i)=>{const tr=document.createElement('tr');
+      tr.innerHTML='<td style="white-space:nowrap"><strong>'+fmtDate(e.data)+'</strong></td>'+
+        '<td style="white-space:nowrap"><strong>'+(e.progresso!=null?e.progresso:0)+'%</strong></td>'+
+        '<td style="white-space:nowrap"><span class="rag-badge" style="background:'+(RAG_COLOR[e.rag]||'#8f8f8f')+'">'+esc(e.rag||'')+'</span></td>'+
+        '<td class="prewrap">'+esc(e.resumo||'')+'</td>'+
+        '<td class="prewrap">'+esc(e.atencao||'')+'</td>'+
+        '<td class="prewrap">'+esc(e.proximos||'')+'</td>'+
+        '<td style="white-space:nowrap"><button class="del-row" title="Editar" onclick="openStatusForm('+i+')">✏️</button> <button class="del-row" title="Excluir" onclick="statusDel('+i+')">&times;</button></td>';
+      tb.appendChild(tr);});
+  }
+
+  /* ================= DASHBOARD ================= */
+  const kpi=(v,l,cls)=>'<div class="kpi '+cls+'"><div class="val">'+v+'</div><div class="lab">'+l+'</div></div>';
+  function drawDonut(id,segs){
+    const svg=document.getElementById(id),r=45,cx=60,cy=60,C=2*Math.PI*r;
+    const tot=segs.reduce((a,b)=>a+b.v,0);let off=0;
+    let h='<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="#ece7e0" stroke-width="16"/>';
+    if(tot>0)segs.forEach(sg=>{if(!sg.v)return;const len=C*sg.v/tot;
+      h+='<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="'+sg.color+'" stroke-width="16" stroke-dasharray="'+len+' '+(C-len)+'" stroke-dashoffset="'+(-off)+'" transform="rotate(-90 '+cx+' '+cy+')"/>';off+=len;});
+    h+='<text x="'+cx+'" y="'+(cy-1)+'" text-anchor="middle" font-size="22" font-weight="800" fill="#0a0a0a">'+tot+'</text><text x="'+cx+'" y="'+(cy+15)+'" text-anchor="middle" font-size="9" letter-spacing="1" fill="#8f8f8f">ITENS</text>';
+    svg.innerHTML=h;
+  }
+  function renderDashboard(){
+    const m=DATA.matriz,total=m.length,c={};MST.forEach(s=>c[s]=0);
+    const today=new Date();today.setHours(0,0,0,0);let vencidos=0;
+    m.forEach(it=>{c[it.status]=(c[it.status]||0)+1;if(it.prazo){const d=new Date(it.prazo+'T00:00:00');if(d<today&&it.status!=='Concluído')vencidos++;}});
+    const done=c['Concluído']||0,pct=total?Math.round(done/total*100):0;
+    // status mais recente (por data)
+    const latest=(DATA.statusHistory&&DATA.statusHistory[0])||null;
+    const rag=latest?latest.rag:'Verde';
+    // hero
+    const meta=[];
+    if(DATA.projeto.res)meta.push(esc(DATA.projeto.res));
+    if(DATA.projeto.prazo)meta.push('Prazo BACEN: '+fmtDate(DATA.projeto.prazo));
+    if(DATA.projeto.sponsor)meta.push('Sponsor: '+esc(DATA.projeto.sponsor));
+    if(latest)meta.push('Status de '+fmtDate(latest.data));
+    document.getElementById('dashHero').innerHTML=
+      '<h3>'+(esc(DATA.projeto.nome)||'Projeto sem nome')+' <span class="rag-badge" style="background:'+(RAG_COLOR[rag]||'#8f8f8f')+'">'+rag+'</span></h3>'+
+      '<div class="meta">'+(meta.join(' · ')||'Preencha os dados gerais na aba “Status e Dados”.')+'</div>'+
+      '<div class="hero-prog"><div class="hero-pct">'+pct+'%<span>concluído</span></div><div class="hero-track"><span style="width:'+pct+'%"></span></div></div>';
+    // kpis
+    document.getElementById('dashKpis').innerHTML=
+      kpi(total,'Itens','')+kpi(done,'Concluídos','good')+kpi(c['Em andamento']||0,'Em andamento','warn')+
+      kpi(c['Atrasado']||0,'Atrasados','bad')+kpi(pct+'%','Conclusão','accent')+kpi(vencidos,'Prazo vencido','bad');
+    drawDonut('dashDonut',MST.map(s=>({v:c[s],color:MCOLOR[s]})));
+    document.getElementById('dashLegend').innerHTML=MST.map(s=>'<li><span class="dot" style="background:'+MCOLOR[s]+'"></span>'+s+' — <strong>'+(c[s]||0)+'</strong></li>').join('');
+    // atenção / próximos (do status mais recente)
+    document.getElementById('dashAtencao').innerHTML=(latest&&latest.atencao)?esc(latest.atencao):'<span class="muted">Sem pontos de atenção registrados.</span>';
+    document.getElementById('dashProximos').innerHTML=(latest&&latest.proximos)?esc(latest.proximos):'<span class="muted">Sem próximos passos registrados.</span>';
+    // prioridades RICE
+    const order=DATA.rice.map(it=>({n:it.name,s:riceScore(it)})).filter(o=>o.s>0).sort((a,b)=>b.s-a.s).slice(0,5);
+    document.getElementById('dashPrio').innerHTML=order.length?order.map((o,idx)=>'<li><span>'+(idx+1)+'. '+(esc(o.n)||'(sem nome)')+'</span><span class="sc">'+Math.round(o.s)+'</span></li>').join(''):'<li class="muted">Preencha a aba RICE.</li>';
+    // marcos
+    document.getElementById('dashMarcos').innerHTML=DATA.marcos.length?('<div class="table-wrap"><table><thead><tr><th>Marco</th><th>Data</th><th>Status</th></tr></thead><tbody>'+DATA.marcos.map(x=>'<tr><td>'+esc(x.m)+'</td><td>'+(x.d?fmtDate(x.d):'—')+'</td><td>'+esc(x.s)+'</td></tr>').join('')+'</tbody></table></div>'):'<span class="muted">Sem marcos.</span>';
+    updatedStamp();
+  }
+  function fmtDate(s){if(!s)return'';const p=s.split('-');return p.length===3?p[2]+'/'+p[1]+'/'+p[0]:s;}
+  function updatedStamp(){const el=document.getElementById('dashUpdated');if(!el)return;
+    const latest=(DATA.statusHistory&&DATA.statusHistory[0])||null;
+    if(latest)el.textContent='Último status registrado em '+fmtDate(latest.data);
+    else if(DATA._updatedAt)el.textContent='Atualizado em '+new Date(DATA._updatedAt).toLocaleString('pt-BR');
+    else el.textContent='';
+  }
+
+  /* ================= render geral ================= */
+  function renderAll(){mtxRender();riceRender();marcosRender();loadDadosInputs();renderDados();renderStatusTable();renderDashboard();}
+
+  /* ================= init ================= */
+  async function init(){
+    let m=null;try{m=await IDB.get('mode');}catch(e){}
+    if(m==='fs'){
+      let h=null;try{h=await IDB.get('fileHandle');}catch(e){}
+      if(h){try{const perm=await h.queryPermission({mode:'readwrite'});
+        if(perm==='granted'){fileHandle=h;mode='fs';const f=await h.getFile();if(f.size>0){try{DATA=normalize(JSON.parse(await f.text()));}catch(e){}}renderAll();setStorageBar('Pasta conectada: '+((await IDB.get('dirName'))||'pasta')+' / '+FILE_NAME,true);return;}
+        else{renderAll();document.getElementById('reconnect').hidden=false;return;}
+      }catch(e){}}
+    }else if(m==='local'){await useLocal();return;}
+    renderAll();openOnboarding();
+  }
+  init();
+</script>
+</body>
+</html>

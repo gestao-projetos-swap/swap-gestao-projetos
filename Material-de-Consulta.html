@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guia de Gestão de Projetos & PMO — Swap</title>
+<style>
+  :root{
+    /* Paleta oficial Swap (extraída visualmente de swap.financial): preto + creme + laranja */
+    --black:#0a0a0a;          /* primária */
+    --ink:#1a1a1a;
+    --charcoal:#2b2b2b;
+    --accent:#e53516;         /* laranja-vermelho de destaque (CTA da Swap) */
+    --accent-dark:#c22f13;
+    --accent-soft:#fdeee9;    /* fundo laranja bem claro */
+    --cream:#f7f3ee;          /* creme quente do hero */
+    --sand:#efe7dd;
+    --smoke:#f4f2ef;
+    --grey:#8f8f8f;
+    --white:#ffffff;
+    --radius:18px;
+    --shadow:0 8px 30px rgba(0,0,0,.10);
+    --shadow-sm:0 2px 10px rgba(0,0,0,.07);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Segoe UI',system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);background:var(--smoke);line-height:1.6;
+  }
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  /* ---------- HEADER ---------- */
+  header{
+    background:linear-gradient(135deg,var(--black) 0%,var(--charcoal) 100%);
+    color:#fff;padding:34px 6vw 26px;position:relative;overflow:hidden;
+  }
+  header::after{
+    content:"";position:absolute;right:-80px;top:-80px;width:320px;height:320px;
+    background:radial-gradient(circle,var(--accent) 0%,transparent 68%);opacity:.25;
+  }
+  .brandbar{display:flex;align-items:center;gap:18px;position:relative;z-index:2;flex-wrap:wrap}
+  /* >>> LOGO DA SWAP: troque o conteúdo abaixo pela tag <img src="logo-swap.png" ...> <<< */
+  .logo-slot{
+    display:flex;align-items:center;justify-content:center;
+    background:#fff;color:var(--black);font-weight:800;letter-spacing:.5px;
+    border-radius:12px;padding:10px 18px;font-size:22px;min-width:120px;min-height:46px;
+    border:2px dashed var(--cream);
+  }
+  .logo-slot img{max-height:40px;display:block}
+  .header-txt h1{font-size:26px;font-weight:700;line-height:1.2}
+  .header-txt p{font-size:14px;color:var(--cream);margin-top:4px;max-width:640px}
+  .tagline{margin-top:18px;position:relative;z-index:2;font-size:13px;color:var(--accent-soft);
+    background:rgba(255,255,255,.08);display:inline-block;padding:6px 14px;border-radius:20px}
+
+  /* ---------- TABS ---------- */
+  .tabs{display:flex;gap:6px;padding:0 6vw;background:var(--black);
+    position:sticky;top:0;z-index:10;flex-wrap:wrap}
+  .tab-btn{
+    background:transparent;border:none;color:#c2bcb4;cursor:pointer;
+    padding:15px 22px;font-size:15px;font-weight:600;border-bottom:3px solid transparent;
+    transition:.2s;font-family:inherit;
+  }
+  .tab-btn:hover{color:#fff}
+  .tab-btn.active{color:#fff;border-bottom-color:var(--accent)}
+
+  /* ---------- CONTENT ---------- */
+  main{max-width:1080px;margin:0 auto;padding:34px 6vw 80px}
+  .tab-panel{display:none;animation:fade .35s ease}
+  .tab-panel.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  .intro{background:linear-gradient(135deg,var(--accent-soft),#fff);border-left:5px solid var(--accent);
+    padding:20px 24px;border-radius:var(--radius);margin-bottom:30px;box-shadow:var(--shadow-sm)}
+  .intro h2{color:var(--black);font-size:22px;margin-bottom:6px}
+
+  section.block{background:#fff;border-radius:var(--radius);padding:26px 28px;margin-bottom:22px;
+    box-shadow:var(--shadow-sm)}
+  section.block h3{
+    color:var(--black);font-size:19px;margin-bottom:14px;display:flex;align-items:center;gap:10px;
+  }
+  section.block h3 .num{
+    background:var(--black);color:#fff;width:30px;height:30px;border-radius:9px;
+    display:inline-flex;align-items:center;justify-content:center;font-size:14px;flex:none;
+  }
+  section.block h4{color:var(--charcoal);font-size:15.5px;margin:16px 0 6px}
+  p{margin-bottom:10px}
+  ul,ol{margin:6px 0 12px 22px}
+  li{margin-bottom:7px}
+  strong{color:var(--black)}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:6px}
+  .card{border:1px solid #ece7e0;border-radius:14px;padding:16px 18px;background:#fbf8f4}
+  .card h5{color:var(--black);font-size:15px;margin-bottom:6px}
+  .card .pill{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;
+    color:var(--charcoal);background:var(--accent-soft);padding:3px 9px;border-radius:20px;display:inline-block;margin-bottom:8px}
+
+  /* tips box */
+  .tips{background:#fff7f0;border-left:5px solid var(--accent);border-radius:12px;padding:16px 20px}
+  .tips li{margin-bottom:9px}
+  .tips li strong{color:var(--accent)}
+
+  /* tables */
+  .table-wrap{overflow-x:auto;border-radius:12px;border:1px solid #ece7e0;margin-top:8px}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:640px}
+  th{background:var(--black);color:#fff;text-align:left;padding:11px 12px;font-weight:600;font-size:12.5px}
+  td{padding:11px 12px;border-top:1px solid #efe9e2;vertical-align:top}
+  tr:nth-child(even) td{background:#faf8f5}
+  .lvl{font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap}
+  .lvl.ini{background:#e4f8ef;color:#187a4b}
+  .lvl.int{background:#fff2e2;color:#b5651d}
+  .lvl.adv{background:#fdecea;color:#b5341f}
+  .price{font-weight:600;color:var(--charcoal);white-space:nowrap}
+
+  /* stepper */
+  .steps{counter-reset:step;list-style:none;margin-left:0}
+  .steps li{position:relative;padding-left:48px;margin-bottom:16px}
+  .steps li::before{counter-increment:step;content:counter(step);
+    position:absolute;left:0;top:0;background:linear-gradient(135deg,var(--accent),var(--black));
+    color:#fff;width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700}
+
+  .refs{font-size:13.5px}
+  .refs li{margin-bottom:8px}
+
+  .note{background:var(--accent-soft);border-radius:10px;padding:12px 16px;font-size:13.5px;color:var(--charcoal);margin:12px 0}
+  .placeholder{background:#fff3cd;border:1px dashed var(--accent);border-radius:8px;padding:2px 8px;font-weight:700;color:#8a6d00}
+
+  footer{background:var(--black);color:#c2bcb4;text-align:center;padding:22px 6vw;font-size:12.5px}
+  footer strong{color:#fff}
+
+  /* ---------- APP / FORMULÁRIOS ---------- */
+  .btn{display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-family:inherit;font-weight:600;
+    font-size:14px;border-radius:10px;padding:10px 18px;border:1px solid transparent;transition:.15s;text-decoration:none}
+  .btn-accent{background:var(--accent);color:#fff}
+  .btn-accent:hover{background:var(--accent-dark);text-decoration:none}
+  .btn-ghost{background:#fff;border-color:#d9d2c8;color:var(--charcoal)}
+  .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+  .btn-sm{padding:7px 13px;font-size:12.5px;border-radius:8px}
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0}
+  .link-cta{display:inline-flex;align-items:center;gap:10px;background:var(--black);color:#fff;
+    padding:14px 22px;border-radius:12px;font-weight:700;text-decoration:none;transition:.15s;margin-top:8px}
+  .link-cta:hover{background:var(--accent);color:#fff;text-decoration:none}
+
+  input[type=text],input[type=number],input[type=date],select,textarea{
+    font-family:inherit;font-size:13.5px;color:var(--ink);background:#fff;
+    border:1px solid #d9d2c8;border-radius:8px;padding:7px 9px;width:100%;transition:.15s}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  textarea{resize:vertical;min-height:64px;line-height:1.5}
+  label.fld{display:block;font-size:11.5px;font-weight:700;color:var(--charcoal);text-transform:uppercase;letter-spacing:.4px;margin:12px 0 5px}
+  .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-bottom:6px}
+  .form-grid label.fld{margin-top:0}
+
+  /* tabelas editáveis */
+  table.edit{min-width:760px}
+  table.edit td{padding:6px}
+  table.edit input,table.edit select{border:1px solid #e7e0d6;border-radius:6px}
+  table.edit td.calc{font-weight:800;color:var(--accent-dark);text-align:center;font-size:15px;background:#fff}
+  table.edit td.rank{font-weight:800;color:#fff;text-align:center;width:34px;font-size:14px}
+  .del-row{background:none;border:none;color:var(--accent);cursor:pointer;font-size:19px;font-weight:700;line-height:1;padding:0 4px}
+  .del-row:hover{color:var(--accent-dark)}
+
+  /* KPIs / dashboard */
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px;margin:6px 0 18px}
+  .kpi{background:#fff;border:1px solid #ece7e0;border-radius:14px;padding:15px 16px;box-shadow:var(--shadow-sm)}
+  .kpi .val{font-size:29px;font-weight:800;color:var(--black);line-height:1}
+  .kpi .lab{font-size:11px;color:var(--grey);text-transform:uppercase;letter-spacing:.5px;margin-top:6px;font-weight:700}
+  .kpi.accent .val{color:var(--accent)}
+  .kpi.warn .val{color:#c98a00}
+  .kpi.bad .val{color:#c0392b}
+  .kpi.good .val{color:#1c8a4d}
+  .progress{height:16px;background:#ece7e0;border-radius:20px;overflow:hidden;margin:4px 0 2px}
+  .progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent-dark));border-radius:20px;transition:width .4s}
+  .dash-row{display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center;margin-top:18px}
+  @media(max-width:680px){.dash-row{grid-template-columns:1fr}}
+  .legend{list-style:none;margin:0}
+  .legend li{display:flex;align-items:center;gap:9px;margin-bottom:10px;font-size:14px}
+  .dot{width:13px;height:13px;border-radius:4px;flex:none}
+  .rag-badge{display:inline-block;padding:4px 14px;border-radius:20px;font-weight:700;font-size:13px;color:#fff;margin-left:6px}
+
+  /* barra de dados / backup */
+  .databar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+    background:#fff;border:1px solid #ece7e0;border-left:4px solid var(--accent);border-radius:12px;
+    padding:11px 16px;margin:0 0 24px;box-shadow:var(--shadow-sm)}
+  .databar-hint{font-size:13px;color:var(--charcoal);font-weight:600}
+  .databar-actions{display:flex;gap:8px;flex-wrap:wrap}
+
+  @media (max-width:560px){
+    .header-txt h1{font-size:21px}
+    .tab-btn{padding:13px 14px;font-size:13.5px}
+  }
+  @media print{
+    .tabs{display:none}
+    .tab-panel{display:none!important}.tab-panel.active{display:block!important}
+    .no-print,.toolbar{display:none!important}
+    body{background:#fff}
+    header{background:var(--black)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .kpi,.card,section.block{box-shadow:none}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brandbar">
+    <!-- ========================================================= -->
+    <!-- LOGO DA SWAP: substitua a caixa "logo-slot" abaixo por:    -->
+    <!-- <div class="logo-slot"><img src="logo-swap.png" alt="Swap"></div> -->
+    <!-- ========================================================= -->
+    <div class="logo-slot">swap</div>
+    <div class="header-txt">
+      <h1>Gestão de Projetos &amp; PMO</h1>
+      <p>Guia prático para acompanhar projetos com método — do conceito à aplicação no dia a dia.</p>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs">
+  <button class="tab-btn active" data-tab="gp">Gestão de Projetos</button>
+  <button class="tab-btn" data-tab="pmo">PMO</button>
+  <button class="tab-btn" data-tab="case">Exemplo Real · Case Swap</button>
+  <button class="tab-btn" data-tab="extras">Fundamentos &amp; Recursos</button>
+</nav>
+
+<main>
+
+<!-- ============================================================= -->
+<!-- ABA 1 — GESTÃO DE PROJETOS                                     -->
+<!-- ============================================================= -->
+<div class="tab-panel active" id="gp">
+
+  <div class="intro">
+    <h2>Gestão de Projetos</h2>
+    <p>Como transformar uma intenção em entrega previsível: escopo, prazo, custo, risco e pessoas sob controle, do início ao encerramento.</p>
+  </div>
+
+  <section class="block">
+    <h3><span class="num">1</span>O que é</h3>
+    <p>Um <strong>projeto</strong> é um esforço <strong>temporário</strong> (tem início e fim definidos) para criar um produto, serviço ou resultado <strong>único</strong>. Diferente da operação, que é contínua e repetitiva, o projeto acaba quando o objetivo é atingido.</p>
+    <p><strong>Gestão de projetos</strong> é a aplicação de conhecimentos, habilidades, ferramentas e técnicas às atividades do projeto para atender aos seus requisitos (definição do PMI). Na prática, é equilibrar as restrições que competem entre si:</p>
+    <ul>
+      <li><strong>Escopo</strong> — o que será (e o que não será) entregue.</li>
+      <li><strong>Prazo</strong> — quando.</li>
+      <li><strong>Custo</strong> — com quanto.</li>
+      <li><strong>Qualidade, riscos e recursos</strong> — as demais alavancas que sustentam a entrega.</li>
+    </ul>
+    <div class="note">O <strong>PMBOK 7ª edição</strong> (PMI, 2021) deixou de ser centrado em processos e passou a se organizar por <strong>12 princípios</strong> e <strong>8 domínios de desempenho</strong> (stakeholders, equipe, ciclo de vida, planejamento, trabalho do projeto, entrega, medição e incerteza). A ideia: entregar <strong>valor</strong>, não apenas cumprir etapas.</div>
+  </section>
+
+  <section class="block">
+    <h3><span class="num">2</span>Tipos (abordagens e ciclos de vida)</h3>
+    <div class="grid">
+      <div class="card"><span class="pill">Preditivo</span><h5>Cascata / Waterfall</h5><p>Escopo bem definido no início; fases sequenciais. Bom para projetos previsíveis (obras, compliance, migrações reguladas).</p></div>
+      <div class="card"><span class="pill">Ágil</span><h5>Scrum / Kanban / XP</h5><p>Entregas incrementais em ciclos curtos, com adaptação contínua. Ideal quando os requisitos evoluem (produto, software).</p></div>
+      <div class="card"><span class="pill">Híbrido</span><h5>Preditivo + Ágil</h5><p>Marcos e prazos "duros" no macro (waterfall) com execução ágil nas frentes de construção. O mais usado no mundo real corporativo.</p></div>
+      <div class="card"><span class="pill">Iterativo/Incremental</span><h5>Ciclos de refinamento</h5><p>O produto é construído em partes e refinado a cada rodada até a versão final.</p></div>
+    </div>
+    <p style="margin-top:14px">Também se classificam por natureza: projetos de <strong>TI/produto</strong>, <strong>infraestrutura</strong>, <strong>organizacionais/mudança</strong>, <strong>P&amp;D</strong> e <strong>compliance/regulatórios</strong> (como o case da Swap na aba 3).</p>
+  </section>
+
+  <section class="block">
+    <h3><span class="num">3</span>Melhores práticas</h3>
+    <ul>
+      <li><strong>Termo de Abertura (Project Charter):</strong> formalize objetivo, patrocinador, escopo macro e critérios de sucesso antes de começar.</li>
+      <li><strong>EAP / WBS:</strong> quebre o escopo em entregas e pacotes de trabalho — o que não está na EAP não está no projeto.</li>
+      <li><strong>Cronograma com marcos e caminho crítico:</strong> identifique as dependências e onde o atraso "custa" o projeto inteiro.</li>
+      <li><strong>Gestão de riscos ativa:</strong> mantenha um registro de riscos (probabilidade × impacto) com respostas e responsáveis, revisado periodicamente.</li>
+      <li><strong>Matriz de stakeholders e plano de comunicação:</strong> quem precisa saber de quê, com que frequência e em que formato.</li>
+      <li><strong>Baseline + controle de mudanças:</strong> congele a linha de base e trate mudanças de escopo formalmente (impacto em prazo/custo antes de aprovar).</li>
+      <li><strong>Cadência de status:</strong> reunião curta e recorrente + status report objetivo (verde/amarelo/vermelho).</li>
+      <li><strong>Lições aprendidas:</strong> registre durante o projeto, não só no fim.</li>
+    </ul>
+  </section>
+
+  <section class="block">
+    <h3><span class="num">4</span>Dicas da realidade</h3>
+    <div class="tips"><ul>
+      <li><strong>Comunicação vence ferramenta.</strong> Nenhum software salva um projeto com stakeholders desalinhados. ~90% do tempo de um PM é comunicação.</li>
+      <li><strong>Gerencie expectativas, não só tarefas.</strong> "Entregar" é o que o patrocinador entendeu que receberia — alinhe cedo e por escrito.</li>
+      <li><strong>Status honesto sempre.</strong> Amarelo cedo é gestão; vermelho de surpresa é falha. Ninguém gosta de "melancia" (verde por fora, vermelho por dentro).</li>
+      <li><strong>Uma única fonte da verdade.</strong> Um lugar oficial para cronograma, riscos e decisões. Planilha paralela mata o projeto.</li>
+      <li><strong>Registre decisões e combinados</strong> (ata curta). Memória de reunião não é governança.</li>
+      <li><strong>Saiba dizer "não" (ou "sim, e o impacto é…").</strong> Todo pedido novo tem custo em prazo ou recurso — mostre o trade-off.</li>
+      <li><strong>Foco em dependências e pessoas, não em % de tarefa.</strong> O que trava projeto é gente ocupada e dependência externa, não a barra do Gantt.</li>
+    </ul></div>
+  </section>
+
+  <section class="block">
+    <h3><span class="num">5</span>Melhores cursos</h3>
+    <p>Selecionados por reputação, nível e custo-benefício. <em>Preços variam e as plataformas fazem promoções constantes — confirme o valor atualizado no site.</em></p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Curso</th><th>Plataforma</th><th>Nível</th><th>Preço (ordem de grandeza)</th><th>Por que fazer</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Google Project Management</strong> (Professional Certificate)</td><td>Coursera</td><td><span class="lvl ini">Iniciante</span></td><td class="price">Assinatura mensal (~US$49/mês) · teste grátis</td><td>Melhor porta de entrada. Prático, em ~6 meses, com base ágil e cascata.</td></tr>
+        <tr><td><strong>Foundations / Project Management Principles</strong></td><td>Coursera (UC Irvine, Google)</td><td><span class="lvl ini">Iniciante</span></td><td class="price">Incluído na assinatura</td><td>Fundamentos sólidos alinhados ao PMI.</td></tr>
+        <tr><td><strong>Preparatório PMP® / CAPM®</strong> (35h)</td><td>Udemy</td><td><span class="lvl int">Intermediário</span></td><td class="price">R$ 40–90 em promoção</td><td>Cobre as 35 horas exigidas para o exame; simulados inclusos.</td></tr>
+        <tr><td><strong>Trilhas de Project Management</strong></td><td>LinkedIn Learning</td><td><span class="lvl int">Intermediário</span></td><td class="price">Assinatura (~R$ 40/mês) · 1 mês grátis</td><td>Trilhas curtas por tema (riscos, stakeholders, Agile) com certificado.</td></tr>
+        <tr><td><strong>PMP® Exam Prep</strong> / PMI Kickoff™</td><td>PMI.org</td><td><span class="lvl adv">Avançado</span></td><td class="price">Kickoff grátis · curso pago US$ 349+</td><td>Conteúdo oficial. Kickoff é um curso introdutório gratuito do próprio PMI.</td></tr>
+        <tr><td><strong>Canais gratuitos</strong> (PM, Scrum, PMBOK)</td><td>YouTube (ex.: PMI, EUAX, Project Builder)</td><td><span class="lvl ini">Iniciante</span></td><td class="price">Grátis</td><td>Ótimo para conceitos pontuais e revisão. Complemento, não trilha principal.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="block">
+    <h3><span class="num">6</span>Principais certificações</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Certificação</th><th>Emissor</th><th>Nível / Perfil</th><th>Investimento (aprox.)</th></tr></thead>
+      <tbody>
+        <tr><td><strong>CAPM®</strong> — Certified Associate in PM</td><td>PMI</td><td><span class="lvl ini">Iniciante</span> — quem está começando</td><td class="price">US$ 225 (membro) / US$ 300</td></tr>
+        <tr><td><strong>Google PM Certificate</strong></td><td>Google / Coursera</td><td><span class="lvl ini">Iniciante</span> — entrada no mercado</td><td class="price">Assinatura Coursera</td></tr>
+        <tr><td><strong>PSM I / CSM</strong> — Scrum Master</td><td>Scrum.org / Scrum Alliance</td><td><span class="lvl int">Intermediário</span> — times ágeis</td><td class="price">US$ 150–1.000 (CSM inclui treino)</td></tr>
+        <tr><td><strong>PMP®</strong> — Project Management Professional</td><td>PMI</td><td><span class="lvl adv">Avançado</span> — a mais reconhecida do mundo</td><td class="price">US$ 405 (membro) / US$ 555</td></tr>
+        <tr><td><strong>PMI-ACP®</strong> — Agile Certified Practitioner</td><td>PMI</td><td><span class="lvl adv">Avançado</span> — ágil aprofundado</td><td class="price">US$ 435 (membro) / US$ 495</td></tr>
+        <tr><td><strong>PRINCE2®</strong> Foundation / Practitioner</td><td>PeopleCert / Axelos</td><td><span class="lvl int">Int./Avançado</span> — forte na Europa</td><td class="price">A partir de ~R$ 3.900 (com treino)</td></tr>
+      </tbody>
+    </table></div>
+    <div class="note">Requisitos do <strong>PMP</strong> incluem experiência comprovada em projetos + 35h de educação. Quem ainda não tem experiência começa pelo <strong>CAPM</strong> ou pelo <strong>Google PM</strong>.</div>
+  </section>
+
+  <section class="block">
+    <h3><span class="num">7</span>Passo a passo para aplicar</h3>
+    <p>Baseado nos grupos de processos do PMI (Iniciação → Planejamento → Execução → Monitoramento → Encerramento):</p>
+    <ol class="steps">
+      <li><strong>Iniciar:</strong> escreva o Termo de Abertura — problema, objetivo mensurável, patrocinador, escopo macro e critérios de sucesso.</li>
+      <li><strong>Planejar o escopo:</strong> monte a EAP/WBS e liste as entregas e premissas/restrições.</li>
+      <li><strong>Planejar prazo e recursos:</strong> defina atividades, dependências, responsáveis e cronograma com marcos.</li>
+      <li><strong>Mapear riscos e stakeholders:</strong> registro de riscos + plano de comunicação (quem, o quê, quando).</li>
+      <li><strong>Executar:</strong> coordene o time, remova impedimentos e mantenha todos alinhados.</li>
+      <li><strong>Monitorar e controlar:</strong> acompanhe progresso vs. baseline, status semanal e controle de mudanças.</li>
+      <li><strong>Encerrar:</strong> valide entregas com o patrocinador, registre lições aprendidas e libere recursos.</li>
+    </ol>
+  </section>
+
+  <section class="block">
+    <h3><span class="num">8</span>Referências</h3>
+    <ul class="refs">
+      <li>PMI — <a href="https://www.pmi.org" target="_blank" rel="noopener">Project Management Institute</a> (PMBOK® Guide, 7ª ed., 2021; <em>Standard for Project Management</em>).</li>
+      <li>PMI — <a href="https://www.pmi.org/certifications" target="_blank" rel="noopener">Certificações (PMP, CAPM, PMI-ACP)</a>.</li>
+      <li>Coursera — <a href="https://www.coursera.org/professional-certificates/google-project-management" target="_blank" rel="noopener">Google Project Management Certificate</a>.</li>
+      <li>Axelos / PeopleCert — <a href="https://www.peoplecert.org" target="_blank" rel="noopener">PRINCE2®</a>.</li>
+      <li>Scrum.org — <a href="https://www.scrum.org" target="_blank" rel="noopener">Guia Scrum e certificação PSM</a>.</li>
+    </ul>
+  </section>
+</div>
+
+<!-- ============================================================= -->
+<!-- ABA 2 — PMO                                                    -->
+<!-- ============================================================= -->
+<div class="tab-panel" id="pmo">
+
+  <div class="intro">
+    <h2>PMO — Project Management Office</h2>
+    <p>De projetos isolados para uma máquina de entrega padronizada, medida e ligada à estratégia da empresa.</p>
+  </div>
+
+  <section class="block">
+    <h3><span class="num">1</span>O que é</h3>
+    <p>O <strong>PMO (Escritório de Gerenciamento de Projetos)</strong> é uma unidade organizacional que <strong>define e mantém os padrões</strong> de gestão de projetos na empresa. Ele centraliza método, ferramentas, métricas e governança — funcionando como a "ponte" entre a estratégia da liderança e a execução dos times.</p>
+    <p>Enquanto o gerente de projetos cuida de <strong>um</strong> projeto, o PMO cuida do <strong>conjunto</strong>: garante consistência, dá visibilidade ao portfólio e ajuda a priorizar onde investir esforço.</p>
+    <h4>Principais responsabilidades</h4>
+    <ul>
+      <li>Padronizar metodologia, templates e processos.</li>
+      <li>Consolidar o status do portfólio e reportar à liderança.</li>
+      <li>Apoiar priorização e alocação de recursos entre projetos.</li>
+      <li>Desenvolver pessoas (treinamento, mentoria, comunidade de prática).</li>
+      <li>Monitorar métricas, benefícios e governança.</li>
+    </ul>
+  </section>
+
+  <section class="block">
+    <h3><span class="num">2</span>Tipos</h3>
+    <h4>Por nível de autoridade (modelo clássico PMI)</h4>
+    <div class="grid">
+      <div class="card"><span class="pill">Baixa autoridade</span><h5>PMO de Suporte</h5><p>Consultivo. Oferece templates, treinamento e boas práticas. Não impõe regras. Bom para começar.</p></div>
+      <div class="card"><span class="pill">Média autoridade</span><h5>PMO de Controle</h5><p>Exige aderência a padrões e metodologias. Faz auditoria de conformidade e cobra a governança.</p></div>
+      <div class="card"><span class="pill">Alta autoridade</span><h5>PMO Diretivo</h5><p>Gerencia os projetos diretamente e aloca os PMs. Máximo controle e padronização.</p></div>
+    </div>
+    <h4>Por abrangência</h4>
+    <ul>
+      <li><strong>PMO Corporativo / EPMO:</strong> nível estratégico, liga o portfólio aos objetivos da empresa.</li>
+      <li><strong>PMO Departamental:</strong> foco em uma área (TI, produto, operações).</li>
+      <li><strong>PMO de Projeto/Programa:</strong> temporário, dedicado a uma iniciativa grande.</li>
+      <li><strong>Centro de Excelência (CoE):</strong> guardião do método e da capacitação.</li>
+      <li><strong>Agile PMO / VMO (Value Management Office):</strong> foco em fluxo de valor e agilidade, não em controle.</li>
+    </ul>
+  </section>
+
+  <section class="block">
+    <h3><span class="num">3</span>Melhores práticas</h3>
+    <ul>
+      <li><strong>Defina o mandato e o "porquê" antes da estrutura.</strong> O PMO existe para resolver uma dor específica (falta de visibilidade? atrasos? retrabalho?).</li>
+      <li><strong>Comece leve e evolua.</strong> Um PMO de suporte com poucos padrões bem adotados vale mais que um diretivo rejeitado.</li>
+      <li><strong>Padronize o essencial:</strong> um jeito único de abrir, priorizar, reportar e encerrar projetos.</li>
+      <li><strong>Portfólio priorizado por valor</strong> (ex.: ICE/RICE, esforço × impacto), não por quem grita mais alto.</li>
+      <li><strong>Métricas que a liderança valoriza:</strong> % de projetos no prazo, benefícios realizados, capacidade vs. demanda — não só quantidade de reuniões.</li>
+      <li><strong>Governança em ritmo:</strong> comitê/steering recorrente para decidir prioridades e destravar.</li>
+      <li><strong>Ferramenta única de portfólio</strong> alimentando dashboards em tempo real.</li>
+      <li><strong>Meça a maturidade</strong> (ex.: OPM3) e trate o PMO como um produto em evolução.</li>
+    </ul>
+  </section>
+
+  <section class="block">
+    <h3><span class="num">4</span>Dicas da realidade</h3>
+    <div class="tips"><ul>
+      <li><strong>PMO não pode virar "polícia de processo".</strong> Se só cobra planilha, é o primeiro a ser cortado. Precisa <em>entregar valor visível</em>.</li>
+      <li><strong>Quick wins nos primeiros 90 dias.</strong> Um dashboard de portfólio que a liderança nunca teve compra credibilidade rápido.</li>
+      <li><strong>Padrão bom é o que é usado.</strong> Template de 30 campos ninguém preenche; prefira o mínimo viável.</li>
+      <li><strong>Fale a língua do negócio,</strong> não a do PMBOK. Liderança quer risco, prazo e dinheiro — não jargão.</li>
+      <li><strong>O PMO vive do patrocínio executivo.</strong> Sem sponsor forte, ele não sobrevive à primeira reorganização.</li>
+      <li><strong>Automatize o report.</strong> Se o PMO gasta a semana montando slides à mão, algo está errado.</li>
+    </ul></div>
+  </section>
+
+  <section class="block">
+    <h3><span class="num">5</span>Melhores cursos</h3>
+    <p><em>Confirme valores atualizados; plataformas fazem promoções frequentes.</em></p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Curso</th><th>Plataforma</th><th>Nível</th><th>Preço (ordem de grandeza)</th><th>Foco</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Cursos de PMO / Escritório de Projetos</strong></td><td>Udemy</td><td><span class="lvl int">Intermediário</span></td><td class="price">R$ 40–90 em promoção</td><td>Como estruturar e operar um PMO na prática.</td></tr>
+        <tr><td><strong>Project & Portfolio Management</strong></td><td>LinkedIn Learning</td><td><span class="lvl int">Intermediário</span></td><td class="price">Assinatura (~R$ 40/mês)</td><td>Gestão de portfólio, PMO e governança.</td></tr>
+        <tr><td><strong>PMO-CP (PMO Certified Practitioner)</strong></td><td>PMO Global Alliance / AdaptiveWork</td><td><span class="lvl adv">Avançado</span></td><td class="price">Curso + exame (consultar)</td><td>Referência internacional específica de PMO.</td></tr>
+        <tr><td><strong>Portfolio & Program Management</strong></td><td>Coursera</td><td><span class="lvl int">Intermediário</span></td><td class="price">Incluído na assinatura</td><td>Base de gestão de portfólio e programas.</td></tr>
+        <tr><td><strong>P3O® (Portfolio, Programme & Project Offices)</strong></td><td>Axelos / PeopleCert</td><td><span class="lvl adv">Avançado</span></td><td class="price">Curso credenciado</td><td>Framework de estruturação de escritórios (UK/EU).</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="block">
+    <h3><span class="num">6</span>Principais certificações</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Certificação</th><th>Emissor</th><th>Foco</th><th>Investimento (aprox.)</th></tr></thead>
+      <tbody>
+        <tr><td><strong>PMO-CP</strong></td><td>PMO Global Alliance</td><td>Estruturação e operação de PMO</td><td class="price">Consultar (curso + exame)</td></tr>
+        <tr><td><strong>PfMP®</strong> — Portfolio Management Professional</td><td>PMI</td><td>Gestão de portfólio (sênior)</td><td class="price">US$ 800 (membro) / US$ 1.000</td></tr>
+        <tr><td><strong>PgMP®</strong> — Program Management Professional</td><td>PMI</td><td>Gestão de programas (sênior)</td><td class="price">US$ 800 (membro) / US$ 1.000</td></tr>
+        <tr><td><strong>PMI-RMP®</strong> — Risk Management</td><td>PMI</td><td>Gestão de riscos (muito útil em PMO regulatório)</td><td class="price">US$ 520 (membro) / US$ 670</td></tr>
+        <tr><td><strong>P3O®</strong></td><td>Axelos / PeopleCert</td><td>Estruturação de escritórios de portfólio/programa/projeto</td><td class="price">Curso credenciado</td></tr>
+      </tbody>
+    </table></div>
+    <div class="note">Para quem lidera PMO, a base costuma ser <strong>PMP</strong> + uma trilha de portfólio/programa (<strong>PfMP/PgMP</strong>) ou a específica de PMO (<strong>PMO-CP</strong>).</div>
+  </section>
+
+  <section class="block">
+    <h3><span class="num">7</span>Passo a passo para implementar</h3>
+    <ol class="steps">
+      <li><strong>Diagnóstico:</strong> avalie a maturidade atual e as dores (visibilidade, atrasos, retrabalho, priorização).</li>
+      <li><strong>Defina o mandato:</strong> qual tipo de PMO (suporte/controle/diretivo) e quais problemas ele vai resolver.</li>
+      <li><strong>Garanta o patrocínio executivo</strong> e defina a quem o PMO se reporta.</li>
+      <li><strong>Entregue quick wins:</strong> um inventário de projetos + um dashboard de portfólio nos primeiros 90 dias.</li>
+      <li><strong>Padronize o essencial:</strong> template de abertura, priorização, status report e critérios de encerramento.</li>
+      <li><strong>Escolha a ferramenta</strong> de gestão de portfólio e centralize os dados.</li>
+      <li><strong>Defina métricas e governança:</strong> KPIs + comitê recorrente de decisão.</li>
+      <li><strong>Roadmap de maturidade:</strong> evolua o PMO por ciclos, medindo o valor gerado.</li>
+    </ol>
+  </section>
+
+  <section class="block">
+    <h3><span class="num">8</span>Referências</h3>
+    <ul class="refs">
+      <li>PMI — <a href="https://www.pmi.org/learning/library/pt-2013-pulse-estruturas-pmo-13528" target="_blank" rel="noopener">Estruturas de PMO (Pulse of the Profession)</a>.</li>
+      <li>PMI — <a href="https://www.pmi.org" target="_blank" rel="noopener">Standard for Portfolio / Program Management</a> e OPM3.</li>
+      <li>Axelos — <a href="https://www.axelos.com" target="_blank" rel="noopener">P3O® — Portfolio, Programme and Project Offices</a>.</li>
+      <li>PMO Global Alliance — <a href="https://www.pmoga.world" target="_blank" rel="noopener">Certificação PMO-CP e comunidade de PMO</a>.</li>
+    </ul>
+  </section>
+</div>
+
+<!-- ============================================================= -->
+<!-- ABA 3 — EXEMPLO REAL / CASE SWAP                               -->
+<!-- ============================================================= -->
+<div class="tab-panel" id="case">
+
+  <div class="intro">
+    <h2>Exemplo Real — Adequação Regulatória (Banco Central) na Swap</h2>
+    <p>Como aplicar Gestão de Projetos + PMO para <strong>acompanhar</strong> um projeto de compliance que já teve os artigos analisados, o plano de ação criado e os responsáveis definidos.</p>
+  </div>
+
+  <div class="note">
+    <strong>Preencher com o time:</strong> resolução alvo <span class="placeholder">Resolução BCB nº ___/____</span> · prazo regulatório do BACEN <span class="placeholder">__/__/____</span> · patrocinador (sponsor) <span class="placeholder">nome</span>. O framework abaixo funciona para qualquer resolução.
+  </div>
+
+  <section class="block">
+    <h3><span class="num">1</span>O que é (o case)</h3>
+    <p>Um <strong>projeto de compliance regulatório</strong>: adequar produtos, processos e sistemas da Swap às novas exigências de uma resolução do Banco Central. É um projeto de <strong>prazo "duro"</strong> (a data do regulador não se negocia) e <strong>escopo dirigido por requisitos legais</strong> — o que o torna, por natureza, mais <strong>preditivo</strong> no macro.</p>
+    <p>O time já concluiu as fases iniciais: <strong>análise dos artigos</strong> (interpretação dos requisitos), <strong>plano de ação</strong> (o que fazer para cada requisito) e <strong>definição de responsáveis</strong> (quem faz o quê). A fase atual é <strong>monitoramento e controle</strong> — garantir que o plano avance no ritmo certo e chegue à conformidade antes do prazo.</p>
+  </section>
+
+  <section class="block">
+    <h3><span class="num">2</span>Tipos / abordagem recomendada</h3>
+    <p>Modelo <strong>híbrido</strong>:</p>
+    <ul>
+      <li><strong>Macro preditivo:</strong> marcos amarrados aos prazos do BACEN e aos requisitos da resolução (não negociáveis).</li>
+      <li><strong>Execução por frentes:</strong> cada requisito vira uma "frente" com dono, tratada em ciclos curtos (quinzenais) para adaptar rápido.</li>
+      <li><strong>Governança de PMO leve:</strong> um ponto central consolida status, riscos e evidências de conformidade — essencial em projeto regulatório, onde <em>rastreabilidade</em> é obrigatória.</li>
+    </ul>
+  </section>
+
+  <section class="block">
+    <h3><span class="num">3</span>Melhores práticas aplicadas ao case</h3>
+    <ul>
+      <li><strong>Matriz Requisito → Ação → Responsável → Prazo → Status → Evidência.</strong> A coluna de <em>evidência</em> é o que prova conformidade ao regulador/auditoria.</li>
+      <li><strong>RACI</strong> por frente (quem executa, quem aprova, quem é consultado, quem é informado) — evita "achei que era você".</li>
+      <li><strong>RAID log</strong> (Riscos, Ações, Problemas/Issues, Decisões) atualizado semanalmente.</li>
+      <li><strong>Marcos regulatórios</strong> no cronograma, com folga (buffer) antes da data do BACEN.</li>
+      <li><strong>Status report</strong> semanal em farol (🟢🟡🔴) para a chefia e sponsor.</li>
+      <li><strong>Trilha de auditoria:</strong> versionar documentos e decisões — em compliance, "não documentado = não feito".</li>
+    </ul>
+    <h4>Matriz de acompanhamento (interativa)</h4>
+    <p>Em vez de planilha solta, use a matriz integrada deste material: o time preenche os requisitos, ações, responsáveis, prazos e status — e o <strong>painel consolida o andamento automaticamente</strong> (concluídos, atrasados, % de conclusão e prazos vencidos).</p>
+    <a class="link-cta" href="App-de-Operacao.html">🚀 Abrir o App de Operação — Matriz, RICE e Dashboard →</a>
+  </section>
+
+  <section class="block">
+    <h3><span class="num">4</span>Dicas da realidade (projetos de compliance)</h3>
+    <div class="tips"><ul>
+      <li><strong>O prazo do regulador manda no projeto.</strong> Trabalhe de trás para frente a partir da data do BACEN e reserve buffer.</li>
+      <li><strong>Requisito ambíguo é risco.</strong> Onde a interpretação da norma não é clara, registre a decisão e, se possível, valide com jurídico/compliance.</li>
+      <li><strong>Dependência de terceiros é o maior atraso</strong> (fornecedor, banco liquidante, área externa). Monitore de perto e cedo.</li>
+      <li><strong>Evidência &gt; opinião.</strong> "Está pronto" só vale com o artefato que comprova (log, política publicada, tela, teste).</li>
+      <li><strong>Reporte o farol para a liderança toda semana.</strong> Em compliance, surpresa em cima do prazo é inaceitável.</li>
+      <li><strong>Envolva jurídico/compliance como stakeholders-chave,</strong> não só no fim para "carimbar".</li>
+    </ul></div>
+  </section>
+
+  <section class="block">
+    <h3><span class="num">5</span>Melhores cursos (para este tipo de projeto)</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Curso / Tema</th><th>Plataforma</th><th>Nível</th><th>Preço</th><th>Por que</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Google Project Management</strong></td><td>Coursera</td><td><span class="lvl ini">Iniciante</span></td><td class="price">Assinatura</td><td>Base de acompanhamento de projeto (a que o irmão vai usar já).</td></tr>
+        <tr><td><strong>Gestão de Riscos em Projetos</strong></td><td>LinkedIn / Udemy</td><td><span class="lvl int">Intermediário</span></td><td class="price">Assinatura / R$ 40–90</td><td>Central em projeto regulatório.</td></tr>
+        <tr><td><strong>Compliance / GRC e PLD-FT</strong></td><td>Udemy / LEC / ABBI</td><td><span class="lvl int">Intermediário</span></td><td class="price">Variável</td><td>Contexto regulatório do setor financeiro brasileiro.</td></tr>
+        <tr><td><strong>Regulação do SFN / Banco Central</strong></td><td>Conteúdos ABBC / FEBRABAN / BACEN</td><td><span class="lvl adv">Avançado</span></td><td class="price">Variável / grátis</td><td>Entender o "porquê" das normas e a linguagem do regulador.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="block">
+    <h3><span class="num">6</span>Principais certificações (relevantes ao case)</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Certificação</th><th>Emissor</th><th>Relevância</th></tr></thead>
+      <tbody>
+        <tr><td><strong>CAPM® / Google PM</strong></td><td>PMI / Google</td><td>Base de gestão de projetos para conduzir o acompanhamento.</td></tr>
+        <tr><td><strong>PMI-RMP®</strong> (Riscos)</td><td>PMI</td><td>Muito aderente: projeto regulatório é gestão de risco.</td></tr>
+        <tr><td><strong>CPC-A / CPC-P</strong> (Compliance)</td><td>LEC / ABBI</td><td>Certificações de compliance reconhecidas no mercado financeiro BR.</td></tr>
+        <tr><td><strong>PMP®</strong></td><td>PMI</td><td>Para quem quiser evoluir a carreira em gestão de projetos.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="block">
+    <h3><span class="num">7</span>Passo a passo para acompanhar (fase atual)</h3>
+    <p>Como o plano e os responsáveis já existem, o foco é <strong>monitorar, controlar e reportar</strong> até a conformidade:</p>
+    <ol class="steps">
+      <li><strong>Consolide o plano numa fonte única</strong> (a matriz Requisito → Ação → Responsável → Prazo → Status → Evidência).</li>
+      <li><strong>Amarre os marcos ao prazo do BACEN</strong> <span class="placeholder">data</span>, com buffer antes da data-limite.</li>
+      <li><strong>Defina a cadência:</strong> check-in semanal por frente + status report em farol para o sponsor.</li>
+      <li><strong>Mantenha o RAID log:</strong> registre riscos, issues e decisões a cada semana.</li>
+      <li><strong>Cobre e destrave:</strong> acompanhe atrasos e dependências externas; escale o que estiver em vermelho.</li>
+      <li><strong>Colete evidências</strong> de cada requisito concluído (prova de conformidade / trilha de auditoria).</li>
+      <li><strong>Homologue a conformidade:</strong> validação de jurídico/compliance antes do prazo.</li>
+      <li><strong>Encerre e registre lições aprendidas</strong> — vira template para a próxima resolução.</li>
+    </ol>
+    <div class="note">Ferramentas simples que resolvem: um board (Trello/Jira/Asana/Monday) para as frentes + uma planilha/painel para a matriz e o farol. O que importa é ser <strong>fonte única</strong> e <strong>atualizada</strong>.</div>
+  </section>
+
+  <section class="block">
+    <h3><span class="num">8</span>Referências</h3>
+    <ul class="refs">
+      <li>Banco Central do Brasil — <a href="https://www.bcb.gov.br/estabilidadefinanceira/buscanormas" target="_blank" rel="noopener">Busca de normas (resoluções BCB)</a>. <em>Localize a resolução exata do case.</em></li>
+      <li>PMI — <a href="https://www.pmi.org" target="_blank" rel="noopener">PMBOK® 7 (domínios de incerteza/risco e medição)</a>.</li>
+      <li>PMI — <a href="https://www.pmi.org/certifications/risk-management-rmp" target="_blank" rel="noopener">PMI-RMP (gestão de riscos)</a>.</li>
+      <li>Contexto do setor: matéria sobre a Swap e a regulação de BaaS pelo BACEN — <a href="https://braziljournal.com/brands/swap-lanca-nova-marca-de-olho-nas-grandes-empresas/" target="_blank" rel="noopener">Brazil Journal</a>.</li>
+    </ul>
+  </section>
+</div>
+
+<!-- ============================================================= -->
+<!-- ABA — FUNDAMENTOS & RECURSOS                                   -->
+<!-- ============================================================= -->
+<div class="tab-panel" id="extras">
+
+  <div class="intro">
+    <h2>Fundamentos &amp; Recursos</h2>
+    <p>Um kit de apoio: vocabulário, como medir, como tratar riscos, quais ferramentas usar e por onde começar a estudar.</p>
+  </div>
+
+  <section class="block">
+    <h3><span class="num">1</span>Glossário rápido</h3>
+    <p>Os termos que mais aparecem no dia a dia — em uma linha cada.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Termo</th><th>O que é</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Escopo</strong></td><td>Tudo o que será (e o que não será) entregue no projeto.</td></tr>
+        <tr><td><strong>Termo de Abertura</strong> (Charter)</td><td>Documento que autoriza o projeto: objetivo, sponsor, escopo macro e critérios de sucesso.</td></tr>
+        <tr><td><strong>EAP / WBS</strong></td><td>Quebra do escopo em entregas e pacotes de trabalho menores.</td></tr>
+        <tr><td><strong>Baseline</strong></td><td>Linha de base aprovada (escopo/prazo/custo) usada para comparar o realizado.</td></tr>
+        <tr><td><strong>Caminho crítico</strong></td><td>Sequência de tarefas que define a menor duração possível do projeto — atraso aqui atrasa tudo.</td></tr>
+        <tr><td><strong>Marco</strong> (milestone)</td><td>Ponto de controle importante, sem duração (ex.: “aprovação do BACEN”).</td></tr>
+        <tr><td><strong>Stakeholder</strong></td><td>Qualquer parte interessada ou impactada pelo projeto.</td></tr>
+        <tr><td><strong>Sponsor</strong></td><td>Patrocinador executivo que banca e destrava o projeto.</td></tr>
+        <tr><td><strong>RACI</strong></td><td>Matriz de papéis: Responsável, Aprovador, Consultado, Informado.</td></tr>
+        <tr><td><strong>RAID log</strong></td><td>Registro de Riscos, Ações, Issues (problemas) e Decisões.</td></tr>
+        <tr><td><strong>Kickoff</strong></td><td>Reunião de partida que alinha objetivo, papéis e plano.</td></tr>
+        <tr><td><strong>Backlog</strong></td><td>Lista priorizada de itens/tarefas a fazer (comum no ágil).</td></tr>
+        <tr><td><strong>Sprint</strong></td><td>Ciclo curto de trabalho (1–4 semanas) com entrega ao final (Scrum).</td></tr>
+        <tr><td><strong>Scrum / Kanban</strong></td><td>Scrum: trabalho em sprints com papéis e cerimônias. Kanban: fluxo contínuo com limite de trabalho em progresso.</td></tr>
+        <tr><td><strong>MVP</strong></td><td>Versão mínima viável — o menor entregável que já gera valor e aprendizado.</td></tr>
+        <tr><td><strong>Roadmap</strong></td><td>Visão de médio/longo prazo das entregas ao longo do tempo.</td></tr>
+        <tr><td><strong>Buffer</strong></td><td>Folga proposital no cronograma para absorver imprevistos.</td></tr>
+        <tr><td><strong>Lições aprendidas</strong></td><td>Registro do que funcionou e do que evitar, para os próximos projetos.</td></tr>
+        <tr><td><strong>Portfólio / Programa</strong></td><td>Programa = conjunto de projetos relacionados. Portfólio = todos os projetos/programas da organização.</td></tr>
+        <tr><td><strong>PMO</strong></td><td>Escritório de Projetos: define padrões, dá visibilidade e apoia a priorização.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="block">
+    <h3><span class="num">2</span>Métricas e KPIs</h3>
+    <p>O que medir para saber se o projeto está saudável — e o que a liderança gosta de ver.</p>
+    <h4>No projeto</h4>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Métrica</th><th>O que mede</th><th>Como ler</th></tr></thead>
+      <tbody>
+        <tr><td><strong>% de conclusão</strong></td><td>Itens concluídos ÷ total.</td><td>Visão rápida de avanço (é o do dashboard da operação).</td></tr>
+        <tr><td><strong>Aderência ao prazo</strong> (on-time)</td><td>Entregas no prazo ÷ entregas previstas.</td><td>Quanto mais perto de 100%, melhor a previsibilidade.</td></tr>
+        <tr><td><strong>Prazos vencidos</strong></td><td>Itens com data passada e não concluídos.</td><td>Alerta direto de risco de estouro.</td></tr>
+        <tr><td><strong>SPI</strong> (índice de prazo)</td><td>Valor Agregado ÷ Valor Planejado (EV/PV).</td><td>&gt;1 adiantado, =1 no prazo, &lt;1 atrasado.</td></tr>
+        <tr><td><strong>CPI</strong> (índice de custo)</td><td>Valor Agregado ÷ Custo Real (EV/AC).</td><td>&gt;1 abaixo do orçado, &lt;1 acima do orçado.</td></tr>
+        <tr><td><strong>Riscos abertos</strong></td><td>Quantidade e severidade dos riscos ativos.</td><td>Tendência caindo = projeto amadurecendo.</td></tr>
+      </tbody>
+    </table></div>
+    <h4>No PMO</h4>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Métrica</th><th>O que mede</th></tr></thead>
+      <tbody>
+        <tr><td><strong>% de projetos no prazo/orçamento</strong></td><td>Saúde do portfólio como um todo.</td></tr>
+        <tr><td><strong>Capacidade vs. demanda</strong></td><td>Se o time comporta a fila de projetos.</td></tr>
+        <tr><td><strong>Benefícios realizados</strong></td><td>Valor efetivamente entregue vs. prometido.</td></tr>
+        <tr><td><strong>Nível de maturidade</strong></td><td>Evolução das práticas de gestão (ex.: OPM3).</td></tr>
+      </tbody>
+    </table></div>
+    <div class="note">SPI e CPI vêm da <strong>Gestão de Valor Agregado (EVM)</strong>. Não precisa dominar de cara — comece por % de conclusão, aderência ao prazo e prazos vencidos, que já dizem muito.</div>
+  </section>
+
+  <section class="block">
+    <h3><span class="num">3</span>Gestão de riscos</h3>
+    <p>Risco é um evento incerto que, se ocorrer, afeta o projeto. Gerir risco é antecipar, não apagar incêndio. Processo em cinco passos: <strong>identificar → analisar → priorizar → responder → monitorar</strong>.</p>
+    <h4>Matriz Probabilidade × Impacto</h4>
+    <p>Classifique cada risco cruzando a chance de acontecer com o tamanho do estrago. A cor indica a prioridade.</p>
+    <div class="table-wrap"><table style="min-width:520px;text-align:center">
+      <thead><tr><th style="text-align:left">Probabilidade ↓ / Impacto →</th><th>Baixo</th><th>Médio</th><th>Alto</th></tr></thead>
+      <tbody>
+        <tr><td style="text-align:left"><strong>Alta</strong></td><td style="background:#fff2e2;font-weight:700;color:#b5651d">Médio</td><td style="background:#fdecea;font-weight:700;color:#b5341f">Alto</td><td style="background:#fdecea;font-weight:700;color:#b5341f">Alto</td></tr>
+        <tr><td style="text-align:left"><strong>Média</strong></td><td style="background:#e4f8ef;font-weight:700;color:#187a4b">Baixo</td><td style="background:#fff2e2;font-weight:700;color:#b5651d">Médio</td><td style="background:#fdecea;font-weight:700;color:#b5341f">Alto</td></tr>
+        <tr><td style="text-align:left"><strong>Baixa</strong></td><td style="background:#e4f8ef;font-weight:700;color:#187a4b">Baixo</td><td style="background:#e4f8ef;font-weight:700;color:#187a4b">Baixo</td><td style="background:#fff2e2;font-weight:700;color:#b5651d">Médio</td></tr>
+      </tbody>
+    </table></div>
+    <h4>As quatro respostas a um risco</h4>
+    <div class="grid">
+      <div class="card"><span class="pill">Reduzir a chance/impacto</span><h5>Mitigar</h5><p>Agir para diminuir a probabilidade ou o efeito (ex.: testar antes, redundância).</p></div>
+      <div class="card"><span class="pill">Passar para terceiro</span><h5>Transferir</h5><p>Repassar o risco (seguro, contrato, fornecedor especializado).</p></div>
+      <div class="card"><span class="pill">Conviver</span><h5>Aceitar</h5><p>Assumir o risco conscientemente, com um plano B (contingência) se ocorrer.</p></div>
+      <div class="card"><span class="pill">Eliminar</span><h5>Evitar</h5><p>Mudar o plano para que o risco deixe de existir (ex.: tirar a frente problemática do escopo).</p></div>
+    </div>
+    <div class="note">No case do BACEN: <strong>prazo do regulador</strong> e <strong>dependência de terceiros</strong> costumam ser os riscos de maior impacto — priorize-os no vermelho e defina resposta e responsável para cada um.</div>
+  </section>
+
+  <section class="block">
+    <h3><span class="num">4</span>Ferramentas de mercado</h3>
+    <p>Não existe “a melhor” — existe a que o time usa de verdade. Escolha pela maturidade e pelo tipo de projeto.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Ferramenta</th><th>Melhor para</th><th>Observação</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Jira</strong></td><td>Times de TI/produto em ágil</td><td>Poderosa, mas exige configuração; ótima com Scrum/Kanban.</td></tr>
+        <tr><td><strong>Asana</strong></td><td>Times gerais e multiáreas</td><td>Equilíbrio entre simplicidade e recursos.</td></tr>
+        <tr><td><strong>Trello</strong></td><td>Kanban simples</td><td>Leve e visual; bom para começar.</td></tr>
+        <tr><td><strong>Monday</strong></td><td>Gestão visual e flexível</td><td>Muitos templates; agrada áreas de negócio.</td></tr>
+        <tr><td><strong>MS Project</strong></td><td>Cronograma e cascata</td><td>Forte em caminho crítico e dependências.</td></tr>
+        <tr><td><strong>Miro</strong></td><td>Workshops e mapeamentos</td><td>Quadro colaborativo para kickoff e riscos.</td></tr>
+        <tr><td><strong>Notion / Confluence</strong></td><td>Documentação e base de conhecimento</td><td>Bom para atas, decisões e lições aprendidas.</td></tr>
+        <tr><td><strong>Excel / Google Sheets</strong></td><td>Acompanhamento leve</td><td>Rápido de montar; vira bagunça se o projeto cresce muito.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="block">
+    <h3><span class="num">5</span>Trilha de estudo recomendada</h3>
+    <p>Uma sequência para sair do zero até o avançado, aproveitando os cursos e certificações já citados nas abas anteriores.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Nível</th><th>Foco</th><th>Cursos / Certificações</th></tr></thead>
+      <tbody>
+        <tr><td><span class="lvl ini">Nível 1 · Base</span></td><td>Entender o ciclo do projeto e o vocabulário (use o glossário acima).</td><td>Google Project Management (Coursera); meta de certificação: <strong>CAPM</strong> ou Google PM.</td></tr>
+        <tr><td><span class="lvl int">Nível 2 · Prática</span></td><td>Riscos, comunicação, ágil e ferramentas no dia a dia.</td><td>Gestão de Riscos + Scrum (PSM I / CSM); trilhas no LinkedIn/Udemy.</td></tr>
+        <tr><td><span class="lvl adv">Nível 3 · Avançado</span></td><td>Domínio pleno de gestão de projetos e agilidade.</td><td><strong>PMP</strong> e/ou <strong>PMI-ACP</strong>.</td></tr>
+        <tr><td><span class="lvl adv">Trilha PMO</span></td><td>Portfólio, programas e governança (o que a liderança pediu).</td><td>Portfólio/Programa (<strong>PfMP / PgMP</strong>) ou específica de PMO (<strong>PMO-CP</strong>); riscos: <strong>PMI-RMP</strong>.</td></tr>
+      </tbody>
+    </table></div>
+    <div class="note">Dica: comece aplicando no próprio case do BACEN enquanto estuda o Nível 1 — aprender fazendo fixa muito mais do que só assistir aula.</div>
+  </section>
+</div>
+
+
+</main>
+
+<footer>
+  Material de estudo · <strong>Gestão de Projetos &amp; PMO</strong> · preparado para o time da <strong>Swap</strong>.<br>
+  Cores baseadas na identidade visual da Swap. Preços e ementas de cursos/certificações mudam — confirme nos sites oficiais antes de decidir.
+</footer>
+
+<script>
+  function switchTab(id){
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active',p.id===id));
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  document.querySelectorAll('.tab-btn').forEach(btn=>btn.addEventListener('click',()=>switchTab(btn.dataset.tab)));
+</script>
+</body>
+</html>
