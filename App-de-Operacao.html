@@ -326,6 +326,25 @@
   </div>
 </div>
 
+<!-- MODAL: dados do projeto (aparece no primeiro acesso, após escolher o armazenamento) -->
+<div class="overlay" id="projModal" hidden>
+  <div class="modal">
+    <h2>Cadastre os dados do projeto</h2>
+    <p>Isso personaliza o painel para a liderança. Você pode editar depois a qualquer momento (lápis na aba “Status e Dados”).</p>
+    <div class="form-grid" style="margin-top:16px">
+      <div><label class="fld">Nome do projeto</label><input type="text" id="pm_nome" placeholder="Adequação regulatória BACEN"></div>
+      <div><label class="fld">Resolução</label><input type="text" id="pm_res" placeholder="Resolução BCB nº ___/____"></div>
+      <div><label class="fld">Prazo do BACEN</label><input type="date" id="pm_prazo"></div>
+      <div><label class="fld">Responsável (PM)</label><input type="text" id="pm_resp"></div>
+      <div><label class="fld">Sponsor</label><input type="text" id="pm_sponsor"></div>
+    </div>
+    <div class="toolbar" style="margin-top:16px">
+      <button class="btn btn-accent btn-sm" onclick="projModalSave()">Salvar e começar</button>
+      <button class="btn btn-ghost btn-sm" onclick="projModalSkip()">Pular por agora</button>
+    </div>
+  </div>
+</div>
+
 <footer style="background:var(--black);color:#c2bcb4;text-align:center;padding:20px 6vw;font-size:12.5px">
   App de operação · <strong style="color:#fff">Swap</strong> · dados salvos localmente / na sua nuvem. Faça backup periódico.
 </footer>
@@ -392,14 +411,14 @@
       const f=await fileHandle.getFile();
       if(f.size>0){try{DATA=normalize(JSON.parse(await f.text()));}catch(e){}}
       else{await saveNow();}
-      hideOverlays();renderAll();setStorageBar('Pasta conectada: '+dir.name+' / '+FILE_NAME,true);
+      hideOverlays();renderAll();setStorageBar('Pasta conectada: '+dir.name+' / '+FILE_NAME,true);maybeProjModal();
     }catch(e){/* cancelado */}
   }
   async function useLocal(){
     mode='local';await IDB.set('mode','local');
     const t=lsGet('swap_op_data');
     if(t){try{DATA=normalize(JSON.parse(t));}catch(e){}}
-    hideOverlays();renderAll();setStorageBar('Salvando só neste navegador',true);
+    hideOverlays();renderAll();setStorageBar('Salvando só neste navegador',true);maybeProjModal();
   }
   async function doReconnect(){
     try{
@@ -410,7 +429,7 @@
       fileHandle=h;mode='fs';
       const f=await fileHandle.getFile();
       if(f.size>0){try{DATA=normalize(JSON.parse(await f.text()));}catch(e){}}
-      hideOverlays();renderAll();setStorageBar('Pasta conectada: '+((await IDB.get('dirName'))||'pasta')+' / '+FILE_NAME,true);
+      hideOverlays();renderAll();setStorageBar('Pasta conectada: '+((await IDB.get('dirName'))||'pasta')+' / '+FILE_NAME,true);maybeProjModal();
     }catch(e){openOnboarding();}
   }
   function scheduleSave(){renderDashboard();if(saveTimer)clearTimeout(saveTimer);saveTimer=setTimeout(saveNow,600);}
@@ -561,6 +580,25 @@
   function dadosSave(){for(const id in PROJ_MAP)DATA.projeto[PROJ_MAP[id]]=document.getElementById(id).value;DATA.projetoSaved=true;editingDados=false;renderDados();renderDashboard();scheduleSave();}
   function dadosEdit(){editingDados=true;loadDadosInputs();renderDados();}
 
+  /* ---- Modal de dados do projeto (primeiro acesso) ---- */
+  const PM_MAP={pm_nome:'nome',pm_res:'res',pm_prazo:'prazo',pm_resp:'resp',pm_sponsor:'sponsor'};
+  function maybeProjModal(){
+    if(!DATA.projetoSaved){openProjModal();}
+    else{switchTab('dash');}
+  }
+  function openProjModal(){
+    for(const id in PM_MAP)document.getElementById(id).value=DATA.projeto[PM_MAP[id]]||'';
+    document.getElementById('projModal').hidden=false;
+  }
+  function projModalSave(){
+    for(const id in PM_MAP)DATA.projeto[PM_MAP[id]]=document.getElementById(id).value;
+    DATA.projetoSaved=true;
+    document.getElementById('projModal').hidden=true;
+    loadDadosInputs();renderDados();renderStatusTable();renderDashboard();scheduleSave();
+    switchTab('dash');
+  }
+  function projModalSkip(){document.getElementById('projModal').hidden=true;switchTab('dash');}
+
   /* ---- Status (histórico por data) ---- */
   let editingStatus=-1;
   function openStatusForm(idx){
@@ -661,7 +699,7 @@
     if(m==='fs'){
       let h=null;try{h=await IDB.get('fileHandle');}catch(e){}
       if(h){try{const perm=await h.queryPermission({mode:'readwrite'});
-        if(perm==='granted'){fileHandle=h;mode='fs';const f=await h.getFile();if(f.size>0){try{DATA=normalize(JSON.parse(await f.text()));}catch(e){}}renderAll();setStorageBar('Pasta conectada: '+((await IDB.get('dirName'))||'pasta')+' / '+FILE_NAME,true);return;}
+        if(perm==='granted'){fileHandle=h;mode='fs';const f=await h.getFile();if(f.size>0){try{DATA=normalize(JSON.parse(await f.text()));}catch(e){}}renderAll();setStorageBar('Pasta conectada: '+((await IDB.get('dirName'))||'pasta')+' / '+FILE_NAME,true);maybeProjModal();return;}
         else{renderAll();document.getElementById('reconnect').hidden=false;return;}
       }catch(e){}}
     }else if(m==='local'){await useLocal();return;}
